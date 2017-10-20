@@ -2,9 +2,12 @@
 #define BESUCHER_H
 
 #include <cstdlib>
+#include <memory>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
+
+#include "Main.h"
 
 class Besucher
 {
@@ -18,7 +21,7 @@ public:
             return ( wl2 - wl1 < wl1 + 10 - wl2 ? wl2 - wl1 : wl1 + 10 - wl2 );
     }
     void update(int ellapsedTicks);
-    void draw(sf::RenderWindow win);
+    void draw(std::shared_ptr<sf::RenderWindow> win);
 private:
     int size;
     sf::Color color;
@@ -28,7 +31,7 @@ private:
     int wavelength; //value 1 - 10
     int ammountMerch;
     float aggressionLvl;
-    bool eviel;
+    bool evil;
     int interaktionCooldown;
 };
 

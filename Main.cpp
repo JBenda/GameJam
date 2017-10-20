@@ -1,18 +1,23 @@
+#include "Main.h"
 #include "Map.h"
 #include "Besucher.h"
 #include "Spieler.h"
 
 #include <iostream>
-
+#include <memory>
+#include <ctime>
+#include <cmath>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 int main()
 {
-    const sf::Color cBACKGROUND(0x80, 0x20, 0x14);
+    const sf::Color cBACKGROUND(0x00, 0x00, 0x00);//0x80, 0x20, 0x14);
 
+    std::vector<Besucher> besucher;//MAX_BESUCHER];
+    besucher.push_back(Besucher(sf::Vector2i(120, 120), 20, sf::Color::Green, sf::Vector2i(5, 8)));
 
-    sf::RenderWindow window(sf::VideoMode(1024, 786), "GameJam");
+    std::shared_ptr<sf::RenderWindow> window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
 
     sf::Font font;
     if (!font.loadFromFile("data/Oxygen-Sans.ttf")) {
@@ -20,20 +25,22 @@ int main()
         return EXIT_FAILURE;
     }
     sf::Text text("Hello, world!", font, 36);
-    text.setColor(sf::Color::Cyan);
+    text.setFillColor(sf::Color::Cyan);
+    text.setOutlineColor(sf::Color::Red);
 
-    while (window.isOpen()) {
+    time_t last = time(NULL);
+    while (window->isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window->pollEvent(event)) {
             switch (event.type) {
                 case sf::Event::Closed:
-                    window.close();
+                    window->close();
                     break;
 
                 case sf::Event::KeyPressed:
                     switch (event.key.code) {
                         case sf::Keyboard::Escape:
-                            window.close();
+                            window->close();
                         default: break;
                     }
                     break;
@@ -42,10 +49,20 @@ int main()
             }
         }
 
-        window.clear(cBACKGROUND);
+        time_t elapsed = time(NULL) - last;
+        std::cout << elapsed << std::endl;
+        if (elapsed > MS_PER_TICK) {
+            int ticks = floor((elapsed) / MS_PER_TICK);
+            printf("%i\n", ticks);
+            besucher[0].update(ticks);
+            last += ticks * MS_PER_TICK;
+        }
 
-        window.draw(text);
+        window->clear(cBACKGROUND);
 
-        window.display();
+        window->draw(text);
+        besucher[0].draw(window);
+
+        window->display();
     }
 }

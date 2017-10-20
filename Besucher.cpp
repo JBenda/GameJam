@@ -18,16 +18,16 @@ void Besucher::update(int ellapsedTicks)
 
     position += movement * ellapsedTicks;
 
-    if(     position.x > WINDOW_WIDTH || position.x < 0 )
+    if(position.x > WINDOW_WIDTH || position.x < 0 )
         movement.x = - movement.x;
     if(position.y > WINDOW_HEIGHT || position.y < 0)
-        movment.y = - movement.y;
+        movement.y = - movement.y;
 
 }
-void Besucher::draw(sf::RenderWindow win)
+void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
 {
     sf::CircleShape shape(size);
-    shape.setColor(color);
-    shape.setCenter(posiion);
-    win.draw(shape);
+    shape.setFillColor(color);
+    shape.setPosition(position.x, position.y);
+    win->draw(shape);
 }
