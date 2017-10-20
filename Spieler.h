@@ -1,4 +1,4 @@
-#ifndef SPIELER
-#define SPIELER
+#ifndef SPIELER_H
+#define SPIELER_H
 
-#endif
+#endif /* !SPIELER_H */
