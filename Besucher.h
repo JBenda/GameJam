@@ -9,6 +9,30 @@
 
 #include "Main.h"
 
+
+
+void besucherColision(std::vector<Besucher> besucher)
+{
+    for(int i = 0 ; i < besucher.length; i++)
+    {
+        if(besucher[i].canInteract())
+        {
+            for(int j = i + 1; j < besucher.length; j++)
+            {
+                if(besucher[j].canInteract())
+                {
+                    if(besucher[i].colited(&besucher[j]) )
+                    {
+                        sf::Color colorBuffer = besucher[i].color;
+                        besucher[i].color = besucher[j].color;
+                        besucher[j].color = colorBuffer;
+                    }
+                }
+            }
+        }
+    }
+}
+
 class Besucher
 {
 public:
@@ -20,11 +44,15 @@ public:
         else
             return ( wl2 - wl1 < wl1 + 10 - wl2 ? wl2 - wl1 : wl1 + 10 - wl2 );
     }
-    void update(int ellapsedTicks);
+    void update(int ellapsedTick);
     void draw(std::shared_ptr<sf::RenderWindow> win);
+    bool canInteract(){return (interaktionCooldown <= 0);}
+    bool colited(Besucher *besucher);
+
+    sf::Color color;
 private:
     int size;
-    sf::Color color;
+    
     sf::Vector2i position;
     sf::Vector2i movement;
     std::vector<float> fandom;
