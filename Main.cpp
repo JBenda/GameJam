@@ -28,7 +28,7 @@ int main()
     text.setFillColor(sf::Color::Cyan);
     text.setOutlineColor(sf::Color::Red);
 
-    time_t last = time(NULL);
+    sf::Clock clock = sf::Clock();
     while (window->isOpen()) {
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -49,13 +49,14 @@ int main()
             }
         }
 
-        time_t elapsed = time(NULL) - last;
+        sf::Time t = clock.getElapsedTime();
+        int elapsed = t.asMilliseconds();
         std::cout << elapsed << std::endl;
         if (elapsed > MS_PER_TICK) {
+            clock.restart();
             int ticks = floor((elapsed) / MS_PER_TICK);
             printf("%i\n", ticks);
             besucher[0].update(ticks);
-            last += ticks * MS_PER_TICK;
         }
 
         window->clear(cBACKGROUND);
