@@ -1,11 +1,11 @@
 #include "Besucher.h"
 
-Besucher::Besucher(sf::Vector2i pos, int siz, sf::Color color, sf::Vector2i mov)
+Besucher::Besucher(sf::Vector2i pos, int size, sf::Color color, sf::Vector2i mov)
 {
-    myColor = color;
+    this.color = color;
     position = pos;
     movement = mov;
-    mySize = size;
+    this.size = size;
     interaktionCooldown = 0;
 }
 
@@ -21,5 +21,8 @@ void Besucher::update(int ellapsedTicks)
 }
 void Besucher::draw(sf::RenderWindow win)
 {
-
+    sf::CircleShape shape(size);
+    shape.setColor(color);
+    shape.setCenter(posiion);
+    win.draw(shape);
 }

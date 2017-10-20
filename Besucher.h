@@ -20,8 +20,8 @@ public:
     void update(int ellapsedTicks);
     void draw(sf::RenderWindow win);
 private:
-    int mySize;
-    sf::Color myColor;
+    int size;
+    sf::Color color;
     sf::Vector2i position;
     sf::Vector2i movement;
     std::vector<float> fandom;
