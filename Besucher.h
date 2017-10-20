@@ -1,28 +1,28 @@
-#ifndef BESUCHER
-#define BESUCHER
+#ifndef BESUCHER_H
+#define BESUCHER_H
 
-#include <stdlib>
+#include <cstdlib>
 #include <vector>
+
+#include <SFML/System/Vector2.hpp>
 
 class Besucher
 {
 public:
-    static getWaveDifference(int wL1, int wL2)
+    static int getWaveDifference(int wl1, int wl2)
     {
-        if(wL1 > wL2)
-        {
-            return ( wL1 - wl2 < wL2 + 10 - wL1 ? wl1 - wl2 : wl2 + 10 - wL1 );
-        }
+        if (wl1 > wl2)
+            return ( wl1 - wl2 < wl2 + 10 - wl1 ? wl1 - wl2 : wl2 + 10 - wl1 );
         else
-            return ( wL2 - wl1 < wL1 + 10 - wL2 ? wl2 - wl1 : wl1 + 10 - wL2 );
+            return ( wl2 - wl1 < wl1 + 10 - wl2 ? wl2 - wl1 : wl1 + 10 - wl2 );
     }
 private:
-    std::Vector<int> position[2];
-    std::Vector<float> fandom;
-    int wellenLaenge; //value 1 - 10
+    sf::Vector2<int> position;
+    std::vector<float> fandom;
+    int wavelength; //value 1 - 10
     int ammountMerch;
-    float agressionLvl;
+    float aggressionLvl;
     bool eviel;
-}
+};
 
-#endif
+#endif /* !BESUCHER_H */
