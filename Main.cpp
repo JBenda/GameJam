@@ -14,8 +14,10 @@ int main()
 {
     const sf::Color cBACKGROUND(0x00, 0x00, 0x00);//0x80, 0x20, 0x14);
 
-    std::vector<Besucher> besucher;//MAX_BESUCHER];
-    besucher.push_back(Besucher(sf::Vector2i(120, 120), 20, sf::Color::Green, sf::Vector2i(5, 8)));
+    std::shared_ptr<std::vector<Besucher>> besucher;//MAX_BESUCHER];
+    besucher = std::make_shared<std::vector<Besucher>>();
+    besucher->push_back(Besucher(sf::Vector2i(120, 120), 50, sf::Color::Green, sf::Vector2i(5, 8)));
+    besucher->push_back(Besucher(sf::Vector2i(500, 165), 120, sf::Color::Blue, sf::Vector2i(-2, 3)));
 
     std::shared_ptr<sf::RenderWindow> window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
 
@@ -51,18 +53,20 @@ int main()
 
         sf::Time t = clock.getElapsedTime();
         int elapsed = t.asMilliseconds();
-        std::cout << elapsed << std::endl;
         if (elapsed > MS_PER_TICK) {
             clock.restart();
             int ticks = floor((elapsed) / MS_PER_TICK);
-            printf("%i\n", ticks);
-            besucher[0].update(ticks);
+            besucherCollision(besucher);
+            (*besucher)[0].update(ticks);
+            (*besucher)[1].update(ticks);
         }
 
         window->clear(cBACKGROUND);
 
         window->draw(text);
-        besucher[0].draw(window);
+
+        (*besucher)[0].draw(window);
+        (*besucher)[1].draw(window);
 
         window->display();
     }

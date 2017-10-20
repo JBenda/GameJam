@@ -8,4 +8,6 @@
 
 #define MS_PER_TICK     10
 
+#define IMMUNITY        50
+
 #endif /* MAIN_H */

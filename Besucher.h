@@ -4,34 +4,11 @@
 #include <cstdlib>
 #include <memory>
 #include <vector>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include "Main.h"
-
-
-
-void besucherColision(std::vector<Besucher> besucher)
-{
-    for(int i = 0 ; i < besucher.length; i++)
-    {
-        if(besucher[i].canInteract())
-        {
-            for(int j = i + 1; j < besucher.length; j++)
-            {
-                if(besucher[j].canInteract())
-                {
-                    if(besucher[i].colited(&besucher[j]) )
-                    {
-                        sf::Color colorBuffer = besucher[i].color;
-                        besucher[i].color = besucher[j].color;
-                        besucher[j].color = colorBuffer;
-                    }
-                }
-            }
-        }
-    }
-}
 
 class Besucher
 {
@@ -50,9 +27,10 @@ public:
     bool colited(Besucher *besucher);
 
     sf::Color color;
+    int interaktionCooldown;
 private:
-    int size;
-    
+    int radius;
+
     sf::Vector2i position;
     sf::Vector2i movement;
     std::vector<float> fandom;
@@ -60,7 +38,8 @@ private:
     int ammountMerch;
     float aggressionLvl;
     bool evil;
-    int interaktionCooldown;
 };
+
+void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher);
 
 #endif /* !BESUCHER_H */
