@@ -1,4 +1,4 @@
-#ifndef MAP
-#define MAP
+#ifndef MAP_H
+#define MAP_H
 
-#endif
+#endif /* !MAP_H */

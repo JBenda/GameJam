@@ -27,6 +27,7 @@ bld/
 # ignore Code::Blocks' files
 *.cbp
 *.layout
+*.depend
 [Bb]uild/
 
 # Visual Studio 2015 cache/options directory
