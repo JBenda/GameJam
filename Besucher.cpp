@@ -31,3 +31,12 @@ void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
     shape.setPosition(position.x, position.y);
     win->draw(shape);
 }
+
+bool Besucher::colited(Besucher *besucher)
+{
+    sf::Vector2i delta = this->position - besucher->position;
+    if(delta.x * delta.x + delta.y * delta.y <= (this->size +  besucher->size) * (this->size + besucher->size))
+        return true;
+    else
+        return false;
+}
