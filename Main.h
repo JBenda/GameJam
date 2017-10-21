@@ -24,4 +24,6 @@ typedef std::vector<float> vecf;
 
 #define REFLECTION_ANGLE 100
 
+#define ROATAION_PER_TICK 10
+
 #endif /* MAIN_H */

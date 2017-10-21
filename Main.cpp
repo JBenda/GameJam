@@ -62,10 +62,13 @@ int main()
         if (elapsed > MS_PER_TICK) {
             clock.restart();
             int ticks = floor((elapsed) / MS_PER_TICK);
-            besucherCollision(besucher);
+            for(int i = 0; i < mSpieler->size(); i++){
+                (*mSpieler)[i].update(ticks);
+            }
             for (int i = 0; i < MAX_BESUCHER; ++i) {
                 (*besucher)[i].update(ticks);
             }
+            besucherCollision(besucher);
         }
 
         window->clear(cBACKGROUND);

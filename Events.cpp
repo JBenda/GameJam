@@ -24,21 +24,6 @@ void Events::handleEvents()
                     case sf::Keyboard::Escape:
                         mWindow->close();
                         break;
-                    case sf::Keyboard::W:
-                        (*mSpieler)[0].move(mWindow,  true);
-                        break;
-                    case sf::Keyboard::A:
-                        (*mSpieler)[0].turn(-5, mWindow);
-                        break;
-                    case sf::Keyboard::S:
-                        (*mSpieler)[0].move(mWindow, false);
-                        break;
-                    case sf::Keyboard::D:
-                        (*mSpieler)[0].turn( 5, mWindow);
-                        break;
-                    case sf::Keyboard::Space:
-                        (*mSpieler)[0].shout(mBesucher);
-                        break;
                     default: break;
                 }
                 break;
