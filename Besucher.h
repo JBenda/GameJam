@@ -14,7 +14,7 @@
 class Besucher
 {
 public:
-    Besucher(sf::Vector2i pos, int siz, sf::Color color, sf::Vector2i mov);
+    Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom);
     static int getWaveDifference(int wl1, int wl2)
     {
         if (wl1 > wl2)
@@ -25,21 +25,24 @@ public:
     void update(int ellapsedTick);
     void draw(std::shared_ptr<sf::RenderWindow> win);
     bool canInteract(){return (interaktionCooldown <= 0);}
-    bool colited(Besucher *besucher);
+    bool collided(Besucher *besucher);
 
     sf::Color color;
     int interaktionCooldown;
-    sf::Vector2i movement;
+    sf::Vector2f movement;
 private:
     int radius;
+    int mSpeed;
 
-    sf::Vector2i position;
-    
-    std::vector<float> fandom;
-    int wavelength; //value 1 - 10
-    int ammountMerch;
-    float aggressionLvl;
-    bool evil;
+    sf::Vector2f position;
+
+    std::vector<float> mFandom;
+    int mCharisma; // range 1 to 10
+
+    int mWavelength; //value 1 - 10
+    int mAmmountMerch;
+    float mAggressionLvl;
+    bool mEvil;
 };
 
 void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher);

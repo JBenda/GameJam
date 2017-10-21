@@ -11,13 +11,13 @@
 class Spieler
 {
 public:
-    Spieler(int radius, sf::Color colour, sf::Vector2i pos);
+    Spieler(int radius, sf::Color colour, sf::Vector2f pos);
     void draw(std::shared_ptr<sf::RenderWindow> win);
 
 private:
     int mRadius;
     sf::Color mColour;
-    sf::Vector2i mPosition;
+    sf::Vector2f mPosition;
 };
 
 #endif /* !SPIELER_H */

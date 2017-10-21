@@ -3,13 +3,15 @@
 
 #include <random>
 
-#define WINDOW_WIDTH  1024
-#define WINDOW_HEIGHT  768
+#define WINDOW_WIDTH    1024
+#define WINDOW_HEIGHT    768
 
-#define MAX_BESUCHER    50
+#define MAX_BESUCHER      36
 
-#define MS_PER_TICK     10
+#define MS_PER_TICK       25
 
-#define IMMUNITY        50
+#define IMMUNITY          20
+
+#define REFLECTION_ANGLE 100
 
 #endif /* MAIN_H */

@@ -1,6 +1,6 @@
 #include "Spieler.h"
 
-Spieler::Spieler(int radius, sf::Color colour, sf::Vector2i pos)
+Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos)
 {
     mRadius = radius;
     mColour = colour;

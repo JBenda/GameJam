@@ -1,27 +1,38 @@
 #include "Besucher.h"
 
-Besucher::Besucher(sf::Vector2i pos, int radius, sf::Color color, sf::Vector2i mov)
+Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom)
 {
+    mFandom = fandom;
     this->color = color;
     position = pos;
     movement = mov;
     this->radius = radius;
     interaktionCooldown = 0;
+    mSpeed = sqrt(mov.x * mov.x + mov.y * mov.y);
+    mCharisma = charisma;
+    mWavelength = lambda;
 }
 
 void Besucher::update(int ellapsedTicks)
 {
     if(interaktionCooldown < ellapsedTicks)
+    {
         interaktionCooldown = 0;
+        color = sf::Color::White;
+    }
     else
         interaktionCooldown -= ellapsedTicks;
 
-    position += movement * ellapsedTicks;
+    position += movement * (1.0f * ellapsedTicks);
 
-    if(position.x > WINDOW_WIDTH - radius * 2 || position.x < 0 )
-        movement.x = - movement.x;
-    if(position.y > WINDOW_HEIGHT - radius * 2 || position.y < 0)
-        movement.y = - movement.y;
+    if(position.x > WINDOW_WIDTH - radius * 2)
+        movement = rotateVec(sf::Vector2f(-mSpeed, 0), rand() % 160 - 80);
+    else if (position.x < 0 )
+        movement = rotateVec(sf::Vector2f(mSpeed, 0), rand() % 160 - 80);
+    if(position.y > WINDOW_HEIGHT - radius * 2)
+        movement = rotateVec(sf::Vector2f(0, -mSpeed), rand() % 160 - 80);
+    else if(position.y < 0)
+        movement = rotateVec(sf::Vector2f(0,  mSpeed), rand() % 160 - 80);
 
 }
 void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
@@ -32,9 +43,9 @@ void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
     win->draw(shape);
 }
 
-bool Besucher::colited(Besucher *besucher)
+bool Besucher::collided(Besucher *besucher)
 {
-    sf::Vector2i delta = this->position - besucher->position;
+    sf::Vector2f delta = this->position - besucher->position;
     if(delta.x * delta.x + delta.y * delta.y <= (this->radius +  besucher->radius) * (this->radius + besucher->radius))
         return true;
     else
@@ -43,29 +54,34 @@ bool Besucher::colited(Besucher *besucher)
 
 void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
 {
-    for(int i = 0 ; i < besucher->size(); i++)
+    for(size_t i = 0 ; i < besucher->size(); i++)
     {
         if((*besucher)[i].canInteract())
         {
-            for(int j = i + 1; j < besucher->size(); j++)
+            for(size_t j = i + 1; j < besucher->size(); j++)
             {
                 if((*besucher)[j].canInteract())
                 {
-                    if((*besucher)[i].colited(&((*besucher)[j])) )
+                    if((*besucher)[i].collided(&((*besucher)[j])) )
                     {
-                        std::cout << "Hej!" << std::endl;
-                        sf::Color colorBuffer = (*besucher)[i].color;
-                        (*besucher)[i].color = (*besucher)[j].color;
-                        (*besucher)[j].color = colorBuffer;
+                        int r = (*besucher)[i].color.r + (*besucher)[j].color.r;
+                        int g = (*besucher)[i].color.g + (*besucher)[j].color.g;
+                        int b = (*besucher)[i].color.b + (*besucher)[j].color.b;
+                        r /= 2;
+                        g /= 2;
+                        b /= 2;
+                        (*besucher)[i].color = sf::Color(r, g, b);
+                        (*besucher)[j].color = sf::Color(r, g, b);
+
                         (*besucher)[i].interaktionCooldown = IMMUNITY;
                         (*besucher)[j].interaktionCooldown = IMMUNITY;
 
-                        //apprallen mit zufalls winkel
-                        sf::Vector2i vecBuffer 0 (*besucher)[i].movement;
-                        (*besucher)[i].movement = rotateVec((*besucher)[j].movement, rand() % 180 - 90);
-                        (*besucher)[j].movement = rotateVec(vecBuffer, rand() % 180 - 90);
-                        
-                        
+                        // Apprallen mit Zufallswinkel
+                        sf::Vector2f vecBuffer = (*besucher)[i].movement;
+                        (*besucher)[i].movement = rotateVec((*besucher)[j].movement, rand() % REFLECTION_ANGLE - REFLECTION_ANGLE / 2);
+                        (*besucher)[j].movement = rotateVec(vecBuffer, rand() % REFLECTION_ANGLE - REFLECTION_ANGLE / 2);
+
+
                     }
                 }
             }

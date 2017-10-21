@@ -4,12 +4,10 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 
-sf::Vector2i rotateVec(sf::Vector2i vec, int degree)
-{
-    sf::Vector2i result(0,0);
-    float rad = degree / 180 * PI;
-    result.x = vec.x * cosf(rad) - vec.y * sinf(rad);
-    result.y = vec.x * sinf(rad) + vec.y * sinf(rad);
-}
+#include "Main.h"
+
+sf::Vector2f rotateVec(sf::Vector2f vec, int degree);
+
+sf::Vector2f randVec(int len);
 
 #endif // ! UTILS_H
