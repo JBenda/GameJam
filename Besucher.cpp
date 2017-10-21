@@ -1,4 +1,5 @@
 #include "Besucher.h"
+#include "Main.h"
 
 Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom)
 {
@@ -6,17 +7,16 @@ Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f m
     this->color = color;
     position = pos;
     movement = mov;
-    this->radius = radius;
-    interaktionCooldown = 0;
+    mRadius = radius;
     mSpeed = sqrt(mov.x * mov.x + mov.y * mov.y);
     mCharisma = charisma;
     mWavelength = lambda;
+    interaktionCooldown = 0;
 }
 
 void Besucher::update(int ellapsedTicks)
 {
-    if(interaktionCooldown < ellapsedTicks)
-    {
+    if(interaktionCooldown < ellapsedTicks) {
         interaktionCooldown = 0;
         color = sf::Color::White;
     }
@@ -25,19 +25,19 @@ void Besucher::update(int ellapsedTicks)
 
     position += movement * (1.0f * ellapsedTicks);
 
-    if(position.x > WINDOW_WIDTH - radius * 2)
+    if(position.x > WINDOW_WIDTH - mRadius * 2)
         movement = rotateVec(sf::Vector2f(-mSpeed, 0), rand() % 160 - 80);
     else if (position.x < 0 )
         movement = rotateVec(sf::Vector2f( mSpeed, 0), rand() % 160 - 80);
-    if(position.y > WINDOW_HEIGHT - radius * 2)
+    if(position.y > WINDOW_HEIGHT - mRadius * 2)
         movement = rotateVec(sf::Vector2f(0, -mSpeed), rand() % 160 - 80);
     else if(position.y < 0)
         movement = rotateVec(sf::Vector2f(0,  mSpeed), rand() % 160 - 80);
-
 }
+
 void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
 {
-    sf::CircleShape shape(radius);
+    sf::CircleShape shape(mRadius);
     shape.setFillColor(color);
     shape.setPosition(position.x, position.y);
     win->draw(shape);
@@ -46,10 +46,31 @@ void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
 bool Besucher::collided(Besucher *besucher)
 {
     sf::Vector2f delta = this->position - besucher->position;
-    if(delta.x * delta.x + delta.y * delta.y <= (this->radius +  besucher->radius) * (this->radius + besucher->radius))
+    if(delta.x * delta.x + delta.y * delta.y <= (this->mRadius +  besucher->mRadius) * (this->mRadius + besucher->mRadius))
         return true;
     else
         return false;
+}
+
+float Besucher::maxFandom()
+{
+    float lmax = 0;
+    for (size_t i = 0; i <= mFandom.size(); ++i) {
+        lmax = mFandom[i] > lmax ? mFandom[i] : lmax;
+    }
+    return lmax;
+}
+
+float Besucher::standhaftigkeit()
+{
+    return mCharisma * maxFandom();
+}
+
+bool Besucher::interactsWith(Besucher *besucher)
+{
+    int dCharisma = abs(this-> mCharisma - besucher-> mCharisma);
+    int dWaveLen  = getWaveDifference(this-> mWavelength, besucher-> mWavelength);
+    vecf dFandom  = *vec_Sub(&this-> mFandom, &besucher-> mFandom);
 }
 
 void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
@@ -87,21 +108,4 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
             }
         }
     }
-}
-
-float Besucher::maxFandom()
-{
-
-}
-
-float Besucher::standhaftigkeit()
-{
-    return mCharisma;
-}
-
-bool Besucher::interactsWith(Besucher *besucher)
-{
-    int dCharisma = abs(this-> mCharisma - besucher-> mCharisma);
-    int dWaveLen  = getWaveDifference(this-> mWavelength, besucher-> mWavelength);
-    vecf dFandom  = *vec_Sub(&this-> mFandom, &besucher-> mFandom);
 }

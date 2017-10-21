@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "Utils.h"
 
 sf::Vector2f rotateVec(sf::Vector2f vec, int degree)
 {

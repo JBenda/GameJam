@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Besucher.h"
 #include "Spieler.h"
+#include "Events.h"
 
 #include <iostream>
 #include <memory>
@@ -20,9 +21,11 @@ int main()
 
     long playerNum = 3;
 
-    Spieler sp1 = Spieler(25, sf::Color(0x80, 0x20, 0x14), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+    std::shared_ptr<std::vector<Spieler>> spieler;
+    spieler = std::make_shared<std::vector<Spieler>>();
+    spieler-> push_back(Spieler(25, sf::Color(0x80, 0x20, 0x14), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT)));
 
-    std::shared_ptr<std::vector<Besucher>> besucher;//MAX_BESUCHER];
+    std::shared_ptr<std::vector<Besucher>> besucher;
     besucher = std::make_shared<std::vector<Besucher>>();
     sf::Color colorBuffer;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -34,7 +37,7 @@ int main()
         std::vector<float> fandom;
         for(int i = 0; i < playerNum; i++)
             fandom.push_back(gaussFandom(unrealEngine));
-        besucher->push_back(Besucher(sf::Vector2f(rand() % WINDOW_WIDTH - 100, rand() % WINDOW_HEIGHT - 100), 20,
+        besucher-> push_back(Besucher(sf::Vector2f(rand() % WINDOW_WIDTH - 100, rand() % WINDOW_HEIGHT - 100), 20,
                                      colorBuffer, randVec(5), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom));
     }
 
@@ -45,46 +48,14 @@ int main()
         std::cerr << "Couldn‘t load font from ‘data/Oxygen-Sans.ttf’" << std::endl;
         return EXIT_FAILURE;
     }
-    sf::Text text("Hello, world!", font, 36);
+    sf::Text text("", font, 36);
     text.setFillColor(sf::Color::Cyan);
     text.setOutlineColor(sf::Color::Red);
 
     sf::Clock clock = sf::Clock();
+    Events eventHandler = Events(window, spieler, besucher);
     while (window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            switch (event.type) {
-                case sf::Event::Closed:
-                    window->close();
-                    break;
-
-                case sf::Event::KeyPressed:
-                    switch (event.key.code) {
-                        case sf::Keyboard::Escape:
-                            window->close();
-                            break;
-                        case sf::Keyboard::W:
-                            sp1.move(window);
-                            break;
-                        case sf::Keyboard::A:
-                            sp1.turn( 5, window);
-                            break;
-                        case sf::Keyboard::S:
-                            sp1.move(window);
-                            break;
-                        case sf::Keyboard::D:
-                            sp1.turn(-5, window);
-                            break;
-                        case sf::Keyboard::Space:
-                            sp1.shout(besucher);
-                            break;
-                        default: break;
-                    }
-                    break;
-
-                default: break;
-            }
-        }
+        eventHandler.handleEvents();
 
         sf::Time t = clock.getElapsedTime();
         int elapsed = t.asMilliseconds();
@@ -104,7 +75,9 @@ int main()
         for (int i = 0; i < MAX_BESUCHER; ++i) {
             (*besucher)[i].draw(window);
         }
-        sp1.draw(window);
+        for (int i = 0; i < spieler-> size(); ++i) {
+            (*spieler)[i].draw(window);
+        }
 
         window->display();
     }

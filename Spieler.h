@@ -1,5 +1,5 @@
 #ifndef SPIELER_H
-#define SPIELER_H
+#define SPIELER_H 0
 
 #include "Main.h"
 #include "Besucher.h"
@@ -15,12 +15,12 @@ public:
     Spieler(int radius, sf::Color colour, sf::Vector2f pos);
     void draw(std::shared_ptr<sf::RenderWindow> win);
     void shout(std::shared_ptr<std::vector<Besucher>> besucher);
-    void move(std::shared_ptr<sf::RenderWindow> win);
+    void move(std::shared_ptr<sf::RenderWindow> win, bool forwards);
     void turn(int deg, std::shared_ptr<sf::RenderWindow> win);
 
 private:
     int mRadius;
-    sf::Color mColour;
+    sf::Color mColour, mConeColour;
     sf::Vector2f mPosition, mDirection;
 };
 

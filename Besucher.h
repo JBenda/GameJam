@@ -1,5 +1,5 @@
 #ifndef BESUCHER_H
-#define BESUCHER_H
+#define BESUCHER_H 0
 
 #include <cstdlib>
 #include <memory>
@@ -9,7 +9,6 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Main.h"
-#include "utils.h"
 
 class Besucher
 {
@@ -36,7 +35,7 @@ public:
     sf::Vector2f movement;
     sf::Vector2f position;
 private:
-    int radius;
+    int mRadius;
     int mSpeed;
 
 
