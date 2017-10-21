@@ -9,6 +9,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Main.h"
+#include "utils.h"
 
 class Besucher
 {
@@ -28,11 +29,12 @@ public:
 
     sf::Color color;
     int interaktionCooldown;
+    sf::Vector2i movement;
 private:
     int radius;
 
     sf::Vector2i position;
-    sf::Vector2i movement;
+    
     std::vector<float> fandom;
     int wavelength; //value 1 - 10
     int ammountMerch;

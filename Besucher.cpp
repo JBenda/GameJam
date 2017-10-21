@@ -59,6 +59,13 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
                         (*besucher)[j].color = colorBuffer;
                         (*besucher)[i].interaktionCooldown = IMMUNITY;
                         (*besucher)[j].interaktionCooldown = IMMUNITY;
+
+                        //apprallen mit zufalls winkel
+                        sf::Vector2i vecBuffer 0 (*besucher)[i].movement;
+                        (*besucher)[i].movement = rotateVec((*besucher)[j].movement, rand() % 180 - 90);
+                        (*besucher)[j].movement = rotateVec(vecBuffer, rand() % 180 - 90);
+                        
+                        
                     }
                 }
             }
