@@ -14,6 +14,7 @@
 int main()
 {
     int winner = -1;
+    int *score;
     int elapsedTicks = 0;
     std::shared_ptr<std::vector<sf::Texture>> textures;
     textures = std::make_shared<std::vector<sf::Texture>>(3);
@@ -39,9 +40,9 @@ int main()
 
     std::shared_ptr<std::vector<Spieler>> spieler;
     spieler = std::make_shared<std::vector<Spieler>>();
-    spieler-> push_back(Spieler(25, sf::Color(0xFF, 0x00, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher, 0));
-    spieler-> push_back(Spieler(25, sf::Color(0x00, 0x00, 0xFF), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher, 1));
-    spieler-> push_back(Spieler(25, sf::Color(0x00, 0xFF, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher, 2));
+    spieler-> push_back(Spieler(25, PLAYER_COLOR[0], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher, 0));
+    spieler-> push_back(Spieler(25, PLAYER_COLOR[1], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher, 1));
+    spieler-> push_back(Spieler(25, PLAYER_COLOR[2], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher, 2));
 
     sf::Color colorBuffer = sf::Color::White;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -88,15 +89,25 @@ int main()
         }
         else if(winner < 0)
         {
-            int *score = (int*)calloc(playerNum, sizeof(int));//init 0
+            std::cerr << "Test" << std::endl;
+            score = (int*)calloc(playerNum, sizeof(int));//init 0
             for(size_t i = 0; i < besucher->size(); i++)
             {
-                score[ (*besucher)[i].maxFandom() ] ++;
+                score[ (*besucher)[i].whichIsTheMaxFandom() ] ++;
             }
-            for(int i = 0; i < playerNum; i++)
-
+            std::cerr << "JUHU" << std::endl;
+            int plID = 0;
+            int hs = 0;
+            for(int i = 0; i < playerNum; i++) {
+                if (hs < score[i]) {
+                    plID = i;
+                    hs = score[i];
+                }
+            }
+            winner = plID;
 
         }
+        std::cerr << elapsedTicks << std::endl;
         window->clear(cBACKGROUND);
 
         for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -106,12 +117,17 @@ int main()
             (*spieler)[i].draw(window);
         }
 
-        if(elapsedTicks >= TICKS_PER_GAME)
+        if(elapsedTicks >= TICKS_PER_GAME && winner >= 0)
         {
             sf::Text text;
-            text.setString("YOU WIN!!");
-            text.setColor()
-            text.setPosition()
+            char str[1024];
+             sprintf(str, "YOU WIN!!\n\t%i", score[winner]);
+            text.setString(str);
+            text.setColor(PLAYER_COLOR[winner]);
+            text.setFont(font);
+            text.setCharacterSize(80);
+            text.setPosition(WINDOW_HWIDTH - text.getGlobalBounds().height / 2, WINDOW_HHEIGHT - text.getGlobalBounds().width / 2);
+
             window->draw(text);
         }
         window->display();

@@ -28,7 +28,7 @@ void Besucher::addStun(int stun)
 
 void Besucher::increaseAggression(int playerId)
 {
-    mAggressionLvl += (mEvil ? 60 : 30) * (2.f - mFandom[playerId]);
+    mAggressionLvl += (mEvil ? 60 : 20) * (1.25f - mFandom[playerId]);
     if(mAggressionLvl >= 100)
     {
         aggro = playerId;
@@ -113,6 +113,16 @@ bool Besucher::collided(Besucher *besucher)
         return true;
     else
         return false;
+}
+
+int Besucher::whichIsTheMaxFandom()
+{
+    float lmax = 0;
+    int id;
+    for (size_t i = 0; i <= mFandom.size(); ++i) {
+        lmax = mFandom[i] > lmax ? id = i, mFandom[i] : lmax;//ich war das nicht !! Das war der da.
+    }
+    return id;
 }
 
 float Besucher::maxFandom()

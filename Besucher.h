@@ -28,6 +28,7 @@ public:
     bool collided(Besucher *besucher);
 
     float maxFandom();
+    int  whichIsTheMaxFandom();
     float standhaftigkeit();
     bool converge(Besucher *besucher);
     void increaseAggression(int playerId);

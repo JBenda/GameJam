@@ -96,7 +96,7 @@ void Spieler::megaphone()
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
             std::vector<float> dFandom = vec_P_Sub(&((*pBesucher)[i].mFandom), mID);
-            if(vec_Len(&dFandom) < 0.75f * sqrt(dFandom.size()))
+            if(vec_Len(&dFandom) < 0.5f * sqrt(dFandom.size()))
             {
                 (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.7f) );
                 (*pBesucher)[i].mood = TEXTURES::GOOD_REACTION;
