@@ -95,9 +95,13 @@ void Spieler::megaphone()
         if (len > MEGAPHONE_RANGE) continue;
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
-
+            std::vector<float> dFandom = vec_P_Sub(&((*pBesucher)[i].mFandom), mID);
+            if(vec_Len(dFandom) < sqrt(Fandom.size()))
+                (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.7f) );
+            else
+                (*pBesucher)[i].mFandom = vec_Add( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.3f));
+            (*pBesucher)[i].increaseAggression(mID);
         }
-        (*pBesucher)[i].increaseAggression(mID);
     }
     addStun(CALL_DURATION);
     mCall = CALL_DURATION;

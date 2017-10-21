@@ -6,6 +6,15 @@ float DegToRad(float deg)
     return deg / 180.0 * M_PI;
 }
 
+vecf vec_P_Sub(vecf *vec, int id)
+{
+    vecf result;
+    for(size_t i; i < vec->size(), i++)
+        result.push_back((*vec)[i] - (id == i ? 1.f : 0.f))
+
+    return result;
+}
+
 sf::Vector2f rotateVec(sf::Vector2f vec, int degree)
 {
     sf::Vector2f result(0,0);
