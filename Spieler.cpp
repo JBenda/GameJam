@@ -96,11 +96,17 @@ void Spieler::megaphone()
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
             std::vector<float> dFandom = vec_P_Sub(&((*pBesucher)[i].mFandom), mID);
-            if(vec_Len(dFandom) < sqrt(Fandom.size()))
+            if(vec_Len(&dFandom) < 0.75f * sqrt(dFandom.size()))
+            {
                 (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.7f) );
-            else
+                (*pBesucher)[i].mood = TEXTURES::GOOD_REACTION;
+            }
+            else{
                 (*pBesucher)[i].mFandom = vec_Add( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.3f));
+                (*pBesucher)[i].mood = TEXTURES::BAD_REACTION;
+            }
             (*pBesucher)[i].increaseAggression(mID);
+            (*pBesucher)[i].addStun(CALL_DURATION);
         }
     }
     addStun(CALL_DURATION);

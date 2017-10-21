@@ -8,9 +8,13 @@
 
 typedef std::vector<float> vecf;
 
-const sf::Color CALL_COLOR[2] = {sf::Color(0x00, 0xF0, 0xF0), sf::Color(0x00, 0x88, 0x88)};
+const sf::Color CALL_COLOR[2] = {sf::Color(0xF0, 0xF0, 0x00, 0x80), sf::Color(0x88, 0x88, 0x00, 0x80)};
 
 #include "Utils.h"
+
+#define AGGRESSION_VISIBLITY 70
+
+enum TEXTURES{AGGRO, BAD_REACTION, GOOD_REACTION};
 
 #define WINDOW_WIDTH      1500
 #define WINDOW_HEIGHT      900
@@ -18,14 +22,14 @@ const sf::Color CALL_COLOR[2] = {sf::Color(0x00, 0xF0, 0xF0), sf::Color(0x00, 0x
 #define WINDOW_HWIDTH  (WINDOW_WIDTH / 2.0)
 #define WINDOW_HHEIGHT (WINDOW_HEIGHT / 2.0)
 
-#define MAX_BESUCHER        50
+#define MAX_BESUCHER        100
 
 #define MAX_CHARISMA        10
 #define MAX_DLAMBDA         5
 
 #define MS_PER_TICK         20
 
-#define STUN_DURATION       10
+#define STUN_DURATION       30
 #define CALL_DURATION       8
 
 #define IMMUNITY            20
@@ -35,6 +39,8 @@ const sf::Color CALL_COLOR[2] = {sf::Color(0x00, 0xF0, 0xF0), sf::Color(0x00, 0x
 #define CONE_ANGLE       25.0f
 #define MEGAPHONE_RANGE 200.0f
 #define VELOCITY          5.0f
+
+#define TICKS_PER_GAME    1500
 
 #define ROTATION_PER_TICK   10
 

@@ -13,6 +13,18 @@
 
 int main()
 {
+    int winner = -1;
+    int elapsedTicks = 0;
+    std::shared_ptr<std::vector<sf::Texture>> textures;
+    textures = std::make_shared<std::vector<sf::Texture>>(3);
+
+    if( !(*textures)[TEXTURES::AGGRO].loadFromFile("data/skull.png"))
+        std::cerr << "can't load Textture data/skull.png" << std::endl;
+    if( !(*textures)[TEXTURES::BAD_REACTION].loadFromFile("data/biohazard.png"))
+        std::cerr << "can't load Textture data/biohazard.png" << std::endl;
+    if( !(*textures)[TEXTURES::GOOD_REACTION].loadFromFile("data/sun.png"))
+        std::cerr << "can't load Textture data/sun.png" << std::endl;
+
     srand(time(NULL));
     const sf::Color cBACKGROUND(0x60, 0x60, 0x60);//);
     std::default_random_engine unrealEngine;
@@ -42,42 +54,50 @@ int main()
         for(int i = 0; i < playerNum; i++)
             fandom.push_back(gaussFandom(unrealEngine));
         besucher-> push_back(Besucher(sf::Vector2f(rand() % WINDOW_WIDTH - 100, rand() % WINDOW_HEIGHT - 100), 20,
-                                     colorBuffer, randVec(5), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom));
+                                     colorBuffer, randVec(5), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom, textures));
     }
 
     std::shared_ptr<sf::RenderWindow> window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
 
     sf::Font font;
-    if (!font.loadFromFile("data/Oxygen-Sans.ttf")) {
-        std::cerr << "Couldn‘t load font from ‘data/Oxygen-Sans.ttf’" << std::endl;
+    if (!font.loadFromFile("data/LinLibertine_R.otf")) {
+        std::cerr << "Couldn‘t load font from ‘data/LinLibertine_R.otf’" << std::endl;
         return EXIT_FAILURE;
     }
-    sf::Text text("", font, 36);
-    text.setFillColor(sf::Color::Cyan);
-    text.setOutlineColor(sf::Color::Red);
 
     sf::Clock clock = sf::Clock();
     Events eventHandler = Events(window, spieler, besucher);
     while (window->isOpen()) {
         eventHandler.handleEvents();
-
-        sf::Time t = clock.getElapsedTime();
-        int elapsed = t.asMilliseconds();
-        if (elapsed > MS_PER_TICK) {
-            clock.restart();
-            int ticks = floor((elapsed) / MS_PER_TICK);
-            for(int i = 0; i < spieler->size(); i++){
-                (*spieler)[i].update(ticks);
+        if(elapsedTicks < TICKS_PER_GAME)
+        {
+            sf::Time t = clock.getElapsedTime();
+            int elapsed = t.asMilliseconds();
+            if (elapsed > MS_PER_TICK) {
+                clock.restart();
+                int ticks = floor((elapsed) / MS_PER_TICK);
+                for(int i = 0; i < spieler->size(); i++){
+                    (*spieler)[i].update(ticks);
+                }
+                for (int i = 0; i < MAX_BESUCHER; ++i) {
+                    (*besucher)[i].update(ticks, spieler);
+                }
+                besucherCollision(besucher);
+                elapsedTicks += ticks;
             }
-            for (int i = 0; i < MAX_BESUCHER; ++i) {
-                (*besucher)[i].update(ticks, spieler);
-            }
-            besucherCollision(besucher);
         }
+        else if(winner < 0)
+        {
+            int *score = (int*)calloc(playerNum, sizeof(int));//init 0
+            for(size_t i = 0; i < besucher->size(); i++)
+            {
+                score[ (*besucher)[i].maxFandom() ] ++;
+            }
+            for(int i = 0; i < playerNum; i++)
 
+
+        }
         window->clear(cBACKGROUND);
-
-        window->draw(text);
 
         for (int i = 0; i < MAX_BESUCHER; ++i) {
             (*besucher)[i].draw(window);
@@ -86,6 +106,14 @@ int main()
             (*spieler)[i].draw(window);
         }
 
+        if(elapsedTicks >= TICKS_PER_GAME)
+        {
+            sf::Text text;
+            text.setString("YOU WIN!!");
+            text.setColor()
+            text.setPosition()
+            window->draw(text);
+        }
         window->display();
     }
 }

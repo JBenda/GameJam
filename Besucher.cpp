@@ -2,7 +2,8 @@
 #include "Main.h"
 
 
-Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom)
+Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom
+                   , std::shared_ptr<std::vector<sf::Texture>> textures)
 {
     mFandom = fandom;
     this->color = color;
@@ -15,11 +16,19 @@ Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f m
     interaktionCooldown = 0;
     mAggressionLvl = 0;
     aggro = -1;
+    mStun = 0;
+    mTextures = textures;
+    mood = -1;
+}
+
+void Besucher::addStun(int stun)
+{
+    mStun += stun;
 }
 
 void Besucher::increaseAggression(int playerId)
 {
-    mAggressionLvl += (mEvil ? 30 : 20) * (1.f - mFandom[playerId]);
+    mAggressionLvl += (mEvil ? 60 : 30) * (2.f - mFandom[playerId]);
     if(mAggressionLvl >= 100)
     {
         aggro = playerId;
@@ -32,12 +41,22 @@ void Besucher::increaseAggression(int playerId)
 
 void Besucher::update(int ellapsedTicks, std::shared_ptr<std::vector<Spieler>> spieler)
 {
+    if(mStun > 0 && aggro < 0)
+    {
+        mStun -= 1;
+        return;
+    }
     if(mAggressionLvl < ellapsedTicks){
         mAggressionLvl = 0;
         aggro = -1;
     }
     else
+    {
         mAggressionLvl -= ellapsedTicks;
+        mStun = 0;
+        mood = -1;
+    }
+
 
     if(interaktionCooldown < ellapsedTicks) {
         interaktionCooldown = 0;
@@ -71,10 +90,20 @@ void Besucher::update(int ellapsedTicks, std::shared_ptr<std::vector<Spieler>> s
 void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
 {
 #define LCL_FACTOR * 128 + 128
-    sf::CircleShape shape(mRadius);
-    shape.setFillColor(sf::Color(mFandom[0] LCL_FACTOR, mFandom[1] LCL_FACTOR, mFandom[2] LCL_FACTOR));
-    shape.setPosition(position.x, position.y);
-    win->draw(shape);
+    bool drawSprite = false;
+    if(mAggressionLvl > AGGRESSION_VISIBLITY)
+    {
+        drawSprite = true;
+        mood = TEXTURES::AGGRO;
+    }
+    if(mood > 0)
+        drawSprite = true;
+        sf::CircleShape shape(mRadius);
+        shape.setFillColor(sf::Color(mFandom[0] LCL_FACTOR, mFandom[1] LCL_FACTOR, mFandom[2] LCL_FACTOR));
+        shape.setPosition(position.x, position.y);
+        if(drawSprite)
+            shape.setTexture(&((*mTextures)[mood]));
+        win->draw(shape);
 }
 
 bool Besucher::collided(Besucher *besucher)

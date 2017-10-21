@@ -6,11 +6,13 @@ float DegToRad(float deg)
     return deg / 180.0 * M_PI;
 }
 
+
+
 vecf vec_P_Sub(vecf *vec, int id)
 {
     vecf result;
-    for(size_t i; i < vec->size(), i++)
-        result.push_back((*vec)[i] - (id == i ? 1.f : 0.f))
+    for (size_t i = 0; i < vec->size(); i++)
+        result.push_back((*vec)[i] - (id == i ? 1.f : 0.f));
 
     return result;
 }
@@ -69,7 +71,7 @@ vecf vec_Sub(vecf *vecA, vecf *vecB)
 {
     size_t len = vec_EquDimens(vecA, vecB);
     if (!len) {
-        std::cerr << "Arguments don’t have the same dimensions" << std::endl;
+        std::cerr << "SUB: Arguments don’t have the same dimensions" << std::endl;
         return vecf();
     }
 
@@ -84,7 +86,7 @@ vecf vec_Add(vecf *vecA, vecf *vecB)
 {
     size_t len = vec_EquDimens(vecA, vecB);
     if (!len) {
-        std::cerr << "Arguments don’t have the same dimensions" << std::endl;
+        std::cerr << "ADD: Arguments don’t have the same dimensions" << std::endl;
         return vecf();
     }
 

@@ -14,7 +14,7 @@ class Spieler;
 class Besucher
 {
 public:
-    Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom);
+    Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom, std::shared_ptr<std::vector<sf::Texture>> textures);
     static int getWaveDifference(int wl1, int wl2)
     {
         if (wl1 > wl2)
@@ -31,7 +31,7 @@ public:
     float standhaftigkeit();
     bool converge(Besucher *besucher);
     void increaseAggression(int playerId);
-
+    void addStun(int stun);
     sf::Color color;
     int interaktionCooldown;
     sf::Vector2f movement;
@@ -39,7 +39,10 @@ public:
     std::vector<float> mFandom;
     int mAggressionLvl;
     int aggro;
+    int mood;
 private:
+    std::shared_ptr<std::vector<sf::Texture>> mTextures;
+    int mStun;
     int mRadius;
     int mSpeed;
 
