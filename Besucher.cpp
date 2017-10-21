@@ -154,7 +154,7 @@ bool Besucher::converge(Besucher *besucher)
     v[2] = vec_Len(&dFandom) / sqrt(dFandom.size() * 4);
 
     double prop = (v[0] + 1 - v[1] + 1 - v[2]) / 3;
-    double r = drand48();
+    double r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 
     return (r < prop);
 }
