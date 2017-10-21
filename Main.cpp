@@ -13,19 +13,20 @@
 int main()
 {
     srand(time(NULL));
-    const sf::Color cBACKGROUND(0x00, 0x00, 0x00);//0x80, 0x20, 0x14);
+    const sf::Color cBACKGROUND(0x00, 0x00, 0x00);//);
     std::default_random_engine unrealEngine;
     std::normal_distribution<double> gaussCharisma( 4, 1.2);
     std::normal_distribution<double> gaussFandom(0.2, 0.2);
 
     long playerNum = 3;
 
+    Spieler sp1 = Spieler(25, sf::Color(0x80, 0x20, 0x14), sf::Vector2f(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2));
+
     std::shared_ptr<std::vector<Besucher>> besucher;//MAX_BESUCHER];
     besucher = std::make_shared<std::vector<Besucher>>();
     sf::Color colorBuffer;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
-        switch( i % 3)
-        {
+        switch( i % 3) {
             case 0 : colorBuffer = sf::Color::Blue; break;
             case 1 : colorBuffer = sf::Color::Green; break;
             case 2 : colorBuffer = sf::Color::Red; break;
@@ -33,8 +34,8 @@ int main()
         std::vector<float> fandom;
         for(int i = 0; i < playerNum; i++)
             fandom.push_back(gaussFandom(unrealEngine));
-        besucher->push_back(Besucher(sf::Vector2f(rand() % 800 + 50, rand() % 600 + 40), 20, colorBuffer, randVec(5),
-                                     gaussCharisma(unrealEngine), rand() % 10 + 1, fandom));
+        besucher->push_back(Besucher(sf::Vector2f(rand() % WINDOW_WIDTH - 100, rand() % WINDOW_HEIGHT - 100), 20,
+                                     colorBuffer, randVec(5), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom));
     }
 
     std::shared_ptr<sf::RenderWindow> window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
@@ -61,6 +62,22 @@ int main()
                     switch (event.key.code) {
                         case sf::Keyboard::Escape:
                             window->close();
+                            break;
+                        case sf::Keyboard::W:
+                            sp1.move(window);
+                            break;
+                        case sf::Keyboard::A:
+                            sp1.turn( 5, window);
+                            break;
+                        case sf::Keyboard::S:
+                            sp1.move(window);
+                            break;
+                        case sf::Keyboard::D:
+                            sp1.turn(-5, window);
+                            break;
+                        case sf::Keyboard::Space:
+                            sp1.shout(besucher);
+                            break;
                         default: break;
                     }
                     break;
@@ -87,6 +104,7 @@ int main()
         for (int i = 0; i < MAX_BESUCHER; ++i) {
             (*besucher)[i].draw(window);
         }
+        sp1.draw(window);
 
         window->display();
     }

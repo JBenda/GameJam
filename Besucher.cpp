@@ -28,7 +28,7 @@ void Besucher::update(int ellapsedTicks)
     if(position.x > WINDOW_WIDTH - radius * 2)
         movement = rotateVec(sf::Vector2f(-mSpeed, 0), rand() % 160 - 80);
     else if (position.x < 0 )
-        movement = rotateVec(sf::Vector2f(mSpeed, 0), rand() % 160 - 80);
+        movement = rotateVec(sf::Vector2f( mSpeed, 0), rand() % 160 - 80);
     if(position.y > WINDOW_HEIGHT - radius * 2)
         movement = rotateVec(sf::Vector2f(0, -mSpeed), rand() % 160 - 80);
     else if(position.y < 0)
@@ -87,4 +87,21 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
             }
         }
     }
+}
+
+float Besucher::maxFandom()
+{
+
+}
+
+float Besucher::standhaftigkeit()
+{
+    return mCharisma;
+}
+
+bool Besucher::interactsWith(Besucher *besucher)
+{
+    int dCharisma = abs(this-> mCharisma - besucher-> mCharisma);
+    int dWaveLen  = getWaveDifference(this-> mWavelength, besucher-> mWavelength);
+    vecf dFandom  = *vec_Sub(&this-> mFandom, &besucher-> mFandom);
 }

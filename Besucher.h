@@ -27,14 +27,18 @@ public:
     bool canInteract(){return (interaktionCooldown <= 0);}
     bool collided(Besucher *besucher);
 
+    float maxFandom();
+    float standhaftigkeit();
+    bool interactsWith(Besucher *besucher);
+
     sf::Color color;
     int interaktionCooldown;
     sf::Vector2f movement;
+    sf::Vector2f position;
 private:
     int radius;
     int mSpeed;
 
-    sf::Vector2f position;
 
     std::vector<float> mFandom;
     int mCharisma; // range 1 to 10

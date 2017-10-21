@@ -2,6 +2,9 @@
 #define MAIN_H
 
 #include <random>
+#include <vector>
+
+typedef std::vector<float> vecf;
 
 #define WINDOW_WIDTH    1024
 #define WINDOW_HEIGHT    768

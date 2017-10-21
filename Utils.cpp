@@ -16,3 +16,49 @@ sf::Vector2f randVec(int len)
     r.y *= rand() % 2 == 0 ? -1 : 1;
     return r;
 }
+
+
+/*********************************************************************************************
+**  VECTOR UTILITY ROUTINES ******************************************************************
+*********************************************************************************************/
+
+size_t vec_EquDimens(vecf *vecA, vecf *vecB)
+{
+    size_t len = vecA-> size();
+    return len == vecB-> size() ? len : 0;
+}
+
+vecf* vec_Sub(vecf *vecA, vecf *vecB)
+{
+    size_t len = vec_EquDimens(vecA, vecB);
+    if (!len) return nullptr;
+
+    vecf *result = new vecf();
+    for (size_t i = 0; i < len; ++i) {
+        (*result)[i] = (*vecA)[i] - (*vecB)[i];
+    }
+    return result;
+}
+
+vecf* vec_Add(vecf *vecA, vecf *vecB)
+{
+    size_t len = vec_EquDimens(vecA, vecB);
+    if (!len) return nullptr;
+
+    vecf *result = new vecf();
+    for (size_t i = 0; i < len; ++i) {
+        (*result)[i] = (*vecA)[i] + (*vecB)[i];
+    }
+    return result;
+}
+
+vecf* vec_Mul(vecf *vecA, float fac)
+{
+    size_t len = vecA-> size();
+
+    vecf *result = new vecf();
+    for (size_t i = 0; i < len; ++i) {
+        (*result)[i] = (*vecA)[i] * fac;
+    }
+    return result;
+}
