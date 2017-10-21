@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "Main.h"
 
-Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, int id)
+Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, size_t id)
 {
     mStun = 0;
     mID = id;
@@ -43,6 +43,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
             left = sf::Keyboard::Key::Numpad4;
             right = sf::Keyboard::Key::Numpad6;
             shout = sf::Keyboard::Key::Numpad5;
+          break;
     }
 }
 
@@ -113,6 +114,11 @@ void Spieler::megaphone()
     mCall = CALL_DURATION;
 }
 
+void Spieler::handoutMerch()
+{
+
+}
+
 void Spieler::move(bool forwards, int steps)
 {
     mPosition += forwards ? mDirection * (VELOCITY * steps) : -mDirection * (VELOCITY * steps);
@@ -155,5 +161,7 @@ void Spieler::update(int elapsedTicks)
             turn(-ROTATION_PER_TICK);
         if( sf::Keyboard::isKeyPressed(right))
             turn( ROTATION_PER_TICK);
+        if( sf::Keyboard::isKeyPressed(merch))
+            ;
     }
 }

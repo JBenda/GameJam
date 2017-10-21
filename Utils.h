@@ -18,7 +18,7 @@ float dotProd(sf::Vector2f vecA, sf::Vector2f vecB);
 
 size_t vec_EquDimens(vecf *vecA, vecf *vecB);
 vecf vec_Sub(vecf *vecA, vecf *vecB);
-vecf vec_P_Sub(vecf *vec, int id);
+vecf vec_P_Sub(vecf *vec, size_t id);
 vecf vec_Add(vecf *vecA, vecf *vecB);
 vecf vec_Sub(vecf *vecA, vecf vecB);
 vecf vec_Add(vecf *vecA, vecf vecB);

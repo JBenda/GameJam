@@ -17,7 +17,7 @@ int main()
     int *score;
     int elapsedTicks = 0;
     std::shared_ptr<std::vector<sf::Texture>> textures;
-    textures = std::make_shared<std::vector<sf::Texture>>(3);
+    textures = std::make_shared<std::vector<sf::Texture>>(4);
 
     if( !(*textures)[TEXTURES::AGGRO].loadFromFile("data/skull.png"))
         std::cerr << "can't load Textture data/skull.png" << std::endl;
@@ -25,6 +25,8 @@ int main()
         std::cerr << "can't load Textture data/biohazard.png" << std::endl;
     if( !(*textures)[TEXTURES::GOOD_REACTION].loadFromFile("data/sun.png"))
         std::cerr << "can't load Textture data/sun.png" << std::endl;
+    if( !(*textures)[TEXTURES::MERCHANT].loadFromFile("data/foodball.png"))
+        std::cerr << "can't load Textture data/foodball.png" << std::endl;
 
     srand(time(NULL));
     const sf::Color cBACKGROUND(0x60, 0x60, 0x60);//);
@@ -77,10 +79,10 @@ int main()
             if (elapsed > MS_PER_TICK) {
                 clock.restart();
                 int ticks = floor((elapsed) / MS_PER_TICK);
-                for(int i = 0; i < spieler->size(); i++){
+                for(size_t i = 0; i < spieler->size(); i++){
                     (*spieler)[i].update(ticks);
                 }
-                for (int i = 0; i < MAX_BESUCHER; ++i) {
+                for (size_t i = 0; i < MAX_BESUCHER; ++i) {
                     (*besucher)[i].update(ticks, spieler);
                 }
                 besucherCollision(besucher);
@@ -113,7 +115,7 @@ int main()
         for (int i = 0; i < MAX_BESUCHER; ++i) {
             (*besucher)[i].draw(window);
         }
-        for (int i = 0; i < spieler-> size(); ++i) {
+        for (size_t i = 0; i < spieler-> size(); ++i) {
             (*spieler)[i].draw(window);
         }
 
@@ -123,7 +125,7 @@ int main()
             char str[1024];
              sprintf(str, "YOU WIN!!\n\t%i", score[winner]);
             text.setString(str);
-            text.setColor(PLAYER_COLOR[winner]);
+            text.setFillColor(PLAYER_COLOR[winner]);
             text.setFont(font);
             text.setCharacterSize(80);
             text.setPosition(WINDOW_HWIDTH - text.getGlobalBounds().height / 2, WINDOW_HHEIGHT - text.getGlobalBounds().width / 2);

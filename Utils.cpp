@@ -8,7 +8,7 @@ float DegToRad(float deg)
 
 
 
-vecf vec_P_Sub(vecf *vec, int id)
+vecf vec_P_Sub(vecf *vec, size_t id)
 {
     vecf result;
     for (size_t i = 0; i < vec->size(); i++)

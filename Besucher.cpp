@@ -19,6 +19,8 @@ Besucher::Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f m
     mStun = 0;
     mTextures = textures;
     mood = -1;
+
+    mNMerch = 0;
 }
 
 void Besucher::addStun(int stun)
@@ -39,30 +41,30 @@ void Besucher::increaseAggression(int playerId)
     }
 }
 
-void Besucher::update(int ellapsedTicks, std::shared_ptr<std::vector<Spieler>> spieler)
+void Besucher::update(int elapsedTicks, std::shared_ptr<std::vector<Spieler>> spieler)
 {
     if(mStun > 0 && aggro < 0)
     {
         mStun -= 1;
         return;
     }
-    if(mAggressionLvl < ellapsedTicks){
+    if(mAggressionLvl < elapsedTicks){
         mAggressionLvl = 0;
         aggro = -1;
     }
     else
     {
-        mAggressionLvl -= ellapsedTicks;
+        mAggressionLvl -= elapsedTicks;
         mStun = 0;
         mood = -1;
     }
 
 
-    if(interaktionCooldown < ellapsedTicks) {
+    if(interaktionCooldown < elapsedTicks) {
         interaktionCooldown = 0;
     }
     else
-        interaktionCooldown -= ellapsedTicks;
+        interaktionCooldown -= elapsedTicks;
     if(aggro >= 0)
     {
         position += ((*spieler)[aggro].mPosition - position) / vecLen((*spieler)[aggro].mPosition - position) * 1.0f * VELOCITY;
@@ -74,7 +76,7 @@ void Besucher::update(int ellapsedTicks, std::shared_ptr<std::vector<Spieler>> s
     }
     else
     {
-        position += movement * (1.0f * ellapsedTicks);
+        position += movement * (1.0f * elapsedTicks);
 
         if(position.x > WINDOW_WIDTH - mRadius * 2)
             movement = rotateVec(sf::Vector2f(-mSpeed, 0), rand() % 160 - 80);
@@ -98,12 +100,13 @@ void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
     }
     if(mood > 0)
         drawSprite = true;
-        sf::CircleShape shape(mRadius);
-        shape.setFillColor(sf::Color(mFandom[0] LCL_FACTOR, mFandom[1] LCL_FACTOR, mFandom[2] LCL_FACTOR));
-        shape.setPosition(position.x, position.y);
-        if(drawSprite)
-            shape.setTexture(&((*mTextures)[mood]));
-        win->draw(shape);
+
+    sf::CircleShape shape(mRadius);
+    shape.setFillColor(sf::Color(mFandom[0] LCL_FACTOR, mFandom[1] LCL_FACTOR, mFandom[2] LCL_FACTOR));
+    shape.setPosition(position.x, position.y);
+    if(drawSprite)
+        shape.setTexture(&((*mTextures)[mood]));
+    win->draw(shape);
 }
 
 bool Besucher::collided(Besucher *besucher)
@@ -183,7 +186,7 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
                                 (*besucher)[i].mFandom = vec_Add(&((*besucher)[i].mFandom), vec_Mul( &dFandom, sJ / (sI + sJ)));
                                 (*besucher)[j].mFandom = vec_Sub( &((*besucher)[j].mFandom), vec_Mul( &dFandom, sI / (sI + sJ)));
                             }
-                            for(int k = 0; k < (*besucher)[i].mFandom.size(); k++)
+                            for(size_t k = 0; k < (*besucher)[i].mFandom.size(); k++)
                             {
                                 if((*besucher)[i].mFandom[k] > 1.f)
                                     (*besucher)[i].mFandom[k] = 1.f;
@@ -210,4 +213,18 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
             }
         }
     }
+}
+
+void Besucher::addMerch(size_t units)
+{
+    mNMerch += units;
+}
+
+void Besucher::giveMerch(Besucher *besucher)
+{
+    if (!besucher || !besucher-> mNMerch) return;
+
+    besucher-> addMerch(1);
+    besucher->mFandom[this->whichIsTheMaxFandom()] += MERCH_INC;
+    this-> mNMerch -= 1;
 }
