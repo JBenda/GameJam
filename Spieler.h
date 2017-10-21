@@ -12,13 +12,13 @@
 class Spieler
 {
 public:
-    enum Controls{WSAD, ARROW_KEYS};
-    Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, , std::shared_ptr<std::vector<Besucher>> besucher);
+    enum Controls{WASD, HJKL, ARROW_KEYS, KEYPAD};
+    Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher);
     void draw(std::shared_ptr<sf::RenderWindow> win);
-    void shout(std::shared_ptr<std::vector<Besucher>> besucher);
-    void move(std::shared_ptr<sf::RenderWindow> win, bool forwards);
-    void turn(int deg, std::shared_ptr<sf::RenderWindow> win);
-    void update(std::shared_ptr<sf::RenderWindow> win, int elapsedTicks);
+    void megaphone();
+    void move(bool forwards, int steps);
+    void turn(int deg);
+    void update(int elapsedTicks);
 
 private:
     std::shared_ptr<std::vector<Besucher>> pBesucher;

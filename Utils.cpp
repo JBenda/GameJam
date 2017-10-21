@@ -1,5 +1,10 @@
 #include "Utils.h"
 
+float DegToRad(float deg)
+{
+    return deg / 180.0 * M_PI;
+}
+
 sf::Vector2f rotateVec(sf::Vector2f vec, int degree)
 {
     sf::Vector2f result(0,0);
@@ -17,6 +22,20 @@ sf::Vector2f randVec(int len)
     return r;
 }
 
+float vecLen(sf::Vector2f vec)
+{
+    return sqrt(vec.x * vec.x + vec.y * vec.y);
+}
+
+float crossProd(sf::Vector2f vecA, sf::Vector2f vecB)
+{
+    return (vecA.x * vecB.y) - (vecA.y * vecB.x);
+}
+
+float dotProd(sf::Vector2f vecA, sf::Vector2f vecB)
+{
+    return vecA.x * vecB.x + vecA.y * vecB.y;
+}
 
 /*********************************************************************************************
 **  VECTOR UTILITY ROUTINES ******************************************************************

@@ -21,19 +21,23 @@ int main()
 
     long playerNum = 3;
 
-    std::shared_ptr<std::vector<Spieler>> spieler;
-    spieler = std::make_shared<std::vector<Spieler>>();
-    spieler-> push_back(Spieler(25, sf::Color(0x80, 0x20, 0x14), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT)));
 
     std::shared_ptr<std::vector<Besucher>> besucher;
     besucher = std::make_shared<std::vector<Besucher>>();
-    sf::Color colorBuffer;
+
+    std::shared_ptr<std::vector<Spieler>> spieler;
+    spieler = std::make_shared<std::vector<Spieler>>();
+    spieler-> push_back(Spieler(25, sf::Color(0xFF, 0x00, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher));
+    spieler-> push_back(Spieler(25, sf::Color(0x00, 0x00, 0xFF), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher));
+    spieler-> push_back(Spieler(25, sf::Color(0x00, 0xFF, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher));
+
+    sf::Color colorBuffer = sf::Color::White;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
-        switch( i % 3) {
-            case 0 : colorBuffer = sf::Color::Blue; break;
-            case 1 : colorBuffer = sf::Color::Green; break;
-            case 2 : colorBuffer = sf::Color::Red; break;
-        }
+     //   switch( i % 3) {
+       //     case 0 : colorBuffer = sf::Color::Blue; break;
+         //   case 1 : colorBuffer = sf::Color::Green; break;
+           // case 2 : colorBuffer = sf::Color::Red; break;
+ //       }
         std::vector<float> fandom;
         for(int i = 0; i < playerNum; i++)
             fandom.push_back(gaussFandom(unrealEngine));
@@ -62,8 +66,8 @@ int main()
         if (elapsed > MS_PER_TICK) {
             clock.restart();
             int ticks = floor((elapsed) / MS_PER_TICK);
-            for(int i = 0; i < mSpieler->size(); i++){
-                (*mSpieler)[i].update(ticks);
+            for(int i = 0; i < spieler->size(); i++){
+                (*spieler)[i].update(ticks);
             }
             for (int i = 0; i < MAX_BESUCHER; ++i) {
                 (*besucher)[i].update(ticks);

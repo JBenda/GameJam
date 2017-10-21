@@ -18,7 +18,7 @@ void Besucher::update(int ellapsedTicks)
 {
     if(interaktionCooldown < ellapsedTicks) {
         interaktionCooldown = 0;
-        color = sf::Color::White;
+        //color = sf::Color::White;
     }
     else
         interaktionCooldown -= ellapsedTicks;
