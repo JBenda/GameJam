@@ -2,8 +2,10 @@
 #include "Utils.h"
 #include "Main.h"
 
-Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher)
+Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, int id)
 {
+    mStun = 0;
+    mID = id;
     pBesucher = besucher;
     mRadius = radius;
     mColour = colour;
@@ -11,6 +13,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
     mDirection = sf::Vector2f(0, -1);
     mConeColour = sf::Color(0x80, 0x80, 0x80, 0x80);
     mControler = controler;
+    mCall = 0;
     switch(mControler)
     {
         case ARROW_KEYS:
@@ -57,7 +60,21 @@ void Spieler::draw(std::shared_ptr<sf::RenderWindow> win)
     cv.setPoint(0, mPosition + halfRadius);
     cv.setPoint(1, rightSide);
     cv.setPoint(2, leftSide);
-    cv.setFillColor(mConeColour);
+    if(mCall > 0)
+    {
+        switch(mCall % 3)
+        {
+        case 0:
+        case 2:
+            cv.setFillColor(CALL_COLOR[1]);
+            break;
+        case 1:
+            cv.setFillColor(CALL_COLOR[0]);
+            break;
+        }
+    }
+    else
+        cv.setFillColor(mConeColour);
     win-> draw(cv);
 
     sf::CircleShape shape = sf::CircleShape(mRadius);
@@ -78,14 +95,25 @@ void Spieler::megaphone()
         if (len > MEGAPHONE_RANGE) continue;
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
-            (*pBesucher)[i].color = mColour;
+
         }
+        (*pBesucher)[i].increaseAggression(mID);
     }
+    addStun(CALL_DURATION);
+    mCall = CALL_DURATION;
 }
 
 void Spieler::move(bool forwards, int steps)
 {
     mPosition += forwards ? mDirection * (VELOCITY * steps) : -mDirection * (VELOCITY * steps);
+    if(mPosition.x < mRadius)
+        mPosition.x = mRadius;
+    if(mPosition.x > WINDOW_WIDTH - mRadius)
+        mPosition.x = WINDOW_WIDTH - mRadius;
+    if(mPosition.y < mRadius)
+        mPosition.y = mRadius;
+    if(mPosition.y > WINDOW_HEIGHT - mRadius)
+        mPosition.y = WINDOW_HEIGHT - mRadius;
 }
 
 void Spieler::turn(int deg)
@@ -93,16 +121,29 @@ void Spieler::turn(int deg)
     mDirection = rotateVec(mDirection, deg);
 }
 
+void Spieler::addStun(int stun)
+{
+    mStun += stun;
+}
+
 void Spieler::update(int elapsedTicks)
 {
-    if( sf::Keyboard::isKeyPressed(shout))
-        megaphone();
-    if( sf::Keyboard::isKeyPressed(up) )
-        move(true, elapsedTicks);
-    if( sf::Keyboard::isKeyPressed(down))
-        move(false, elapsedTicks);
-    if( sf::Keyboard::isKeyPressed(left))
-        turn(-ROTATION_PER_TICK);
-    if( sf::Keyboard::isKeyPressed(right))
-        turn( ROTATION_PER_TICK);
+    mCall -= elapsedTicks;
+    if(mCall < 0)
+        mCall = 0;
+    mStun -= elapsedTicks;
+    if(mStun <= 0)
+    {
+        mStun = 0;
+        if( sf::Keyboard::isKeyPressed(shout))
+            megaphone();
+        if( sf::Keyboard::isKeyPressed(up) )
+            move(true, elapsedTicks);
+        if( sf::Keyboard::isKeyPressed(down))
+            move(false, elapsedTicks);
+        if( sf::Keyboard::isKeyPressed(left))
+            turn(-ROTATION_PER_TICK);
+        if( sf::Keyboard::isKeyPressed(right))
+            turn( ROTATION_PER_TICK);
+    }
 }

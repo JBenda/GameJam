@@ -14,7 +14,7 @@
 int main()
 {
     srand(time(NULL));
-    const sf::Color cBACKGROUND(0x00, 0x00, 0x00);//);
+    const sf::Color cBACKGROUND(0x60, 0x60, 0x60);//);
     std::default_random_engine unrealEngine;
     std::normal_distribution<double> gaussCharisma( 4, 1.2);
     std::normal_distribution<double> gaussFandom(0.2, 0.2);
@@ -27,9 +27,9 @@ int main()
 
     std::shared_ptr<std::vector<Spieler>> spieler;
     spieler = std::make_shared<std::vector<Spieler>>();
-    spieler-> push_back(Spieler(25, sf::Color(0xFF, 0x00, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher));
-    spieler-> push_back(Spieler(25, sf::Color(0x00, 0x00, 0xFF), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher));
-    spieler-> push_back(Spieler(25, sf::Color(0x00, 0xFF, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher));
+    spieler-> push_back(Spieler(25, sf::Color(0xFF, 0x00, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher, 0));
+    spieler-> push_back(Spieler(25, sf::Color(0x00, 0x00, 0xFF), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher, 1));
+    spieler-> push_back(Spieler(25, sf::Color(0x00, 0xFF, 0x00), sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher, 2));
 
     sf::Color colorBuffer = sf::Color::White;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -70,7 +70,7 @@ int main()
                 (*spieler)[i].update(ticks);
             }
             for (int i = 0; i < MAX_BESUCHER; ++i) {
-                (*besucher)[i].update(ticks);
+                (*besucher)[i].update(ticks, spieler);
             }
             besucherCollision(besucher);
         }

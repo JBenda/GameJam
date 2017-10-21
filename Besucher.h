@@ -9,7 +9,8 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Main.h"
-
+#include "Spieler.h"
+class Spieler;
 class Besucher
 {
 public:
@@ -21,30 +22,34 @@ public:
         else
             return ( wl2 - wl1 < wl1 + 10 - wl2 ? wl2 - wl1 : wl1 + 10 - wl2 );
     }
-    void update(int ellapsedTick);
+    void update(int ellapsedTick, std::shared_ptr<std::vector<Spieler>> spieler);
     void draw(std::shared_ptr<sf::RenderWindow> win);
     bool canInteract(){return (interaktionCooldown <= 0);}
     bool collided(Besucher *besucher);
 
     float maxFandom();
     float standhaftigkeit();
-    bool interactsWith(Besucher *besucher);
+    bool converge(Besucher *besucher);
+    void increaseAggression(int playerId);
 
     sf::Color color;
     int interaktionCooldown;
     sf::Vector2f movement;
     sf::Vector2f position;
+    std::vector<float> mFandom;
+    int mAggressionLvl;
+    int aggro;
 private:
     int mRadius;
     int mSpeed;
 
 
-    std::vector<float> mFandom;
+
     int mCharisma; // range 1 to 10
 
     int mWavelength; //value 1 - 10
     int mAmmountMerch;
-    float mAggressionLvl;
+
     bool mEvil;
 };
 

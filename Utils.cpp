@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <iostream>
 
 float DegToRad(float deg)
 {
@@ -46,38 +47,65 @@ size_t vec_EquDimens(vecf *vecA, vecf *vecB)
     size_t len = vecA-> size();
     return len == vecB-> size() ? len : 0;
 }
+vecf vec_Sub(vecf *vecA, vecf vecB)
+{
+    return vec_Sub(vecA, &vecB);
+}
+vecf vec_Add(vecf *vecA, vecf vecB)
+{
+    return vec_Add(vecA, &vecB);
+}
 
-vecf* vec_Sub(vecf *vecA, vecf *vecB)
+vecf vec_Sub(vecf *vecA, vecf *vecB)
 {
     size_t len = vec_EquDimens(vecA, vecB);
-    if (!len) return nullptr;
+    if (!len) {
+        std::cerr << "Arguments don’t have the same dimensions" << std::endl;
+        return vecf();
+    }
 
-    vecf *result = new vecf();
+    vecf result = vecf();
     for (size_t i = 0; i < len; ++i) {
-        (*result)[i] = (*vecA)[i] - (*vecB)[i];
+        result.push_back( (*vecA)[i] - (*vecB)[i] );
     }
     return result;
 }
 
-vecf* vec_Add(vecf *vecA, vecf *vecB)
+vecf vec_Add(vecf *vecA, vecf *vecB)
 {
     size_t len = vec_EquDimens(vecA, vecB);
-    if (!len) return nullptr;
+    if (!len) {
+        std::cerr << "Arguments don’t have the same dimensions" << std::endl;
+        return vecf();
+    }
 
-    vecf *result = new vecf();
+    vecf result = vecf();
     for (size_t i = 0; i < len; ++i) {
-        (*result)[i] = (*vecA)[i] + (*vecB)[i];
+        result.push_back( (*vecA)[i] + (*vecB)[i] );
     }
     return result;
 }
-
-vecf* vec_Mul(vecf *vecA, float fac)
+vecf vec_Mul(vecf vecA, float fac)
+{
+    return vec_Mul(&vecA, fac);
+}
+vecf vec_Mul(vecf *vecA, float fac)
 {
     size_t len = vecA-> size();
 
-    vecf *result = new vecf();
+    vecf result = vecf();
     for (size_t i = 0; i < len; ++i) {
-        (*result)[i] = (*vecA)[i] * fac;
+        result.push_back((*vecA)[i] * fac);
     }
     return result;
+}
+
+float vec_Len(vecf *vecA)
+{
+    size_t len = vecA-> size();
+    float sum = 0.0f;
+    for (size_t i = 0; i < len; ++i) {
+        sum += (*vecA)[i] * (*vecA)[i];
+    }
+    return sqrt(sum);
 }
