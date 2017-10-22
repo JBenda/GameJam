@@ -86,7 +86,9 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
     }
     text[4].setFont(font);
     text[4].setCharacterSize(40);
-    text[4].setFillColor(sf::Color::Green);
+    text[4].setFillColor(sf::Color(0xFF, 0xFF, 0x30));
+    text[4].setOutlineColor(sf::Color::Black);
+    text[4].setOutlineThickness(2);
     text[4].setString(TEXT_OUT[4]);
     text[4].setPosition(20, SPLASH_WIDTH / 2 - text[4].getGlobalBounds().width/2);
     std::cerr << "Finished Build" << std::endl;
