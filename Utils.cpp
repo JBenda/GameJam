@@ -38,6 +38,10 @@ float vecLen(sf::Vector2f vec)
 {
     return sqrt(vec.x * vec.x + vec.y * vec.y);
 }
+float vecLen(sf::Vector2i vec)
+{
+    return sqrt(vec.x * vec.x + vec.y * vec.y);
+}
 
 float crossProd(sf::Vector2f vecA, sf::Vector2f vecB)
 {

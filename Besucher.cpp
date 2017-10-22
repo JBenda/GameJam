@@ -34,7 +34,7 @@ void Besucher::increaseAggression(int playerId)
     {
         return;
     }
-    mAggressionLvl += (mEvil ? 60 : 20) * (1.25f - mFandom[playerId]);
+    mAggressionLvl += (mEvil ? 60 : 25) * (1.6f - mFandom[playerId]);
     if(mAggressionLvl >= 100)
     {
         aggro = playerId;
@@ -62,7 +62,6 @@ void Besucher::update(int elapsedTicks, std::shared_ptr<std::vector<Spieler>> sp
         mStun = 0;
         mood = -1;
     }
-
 
     if(interaktionCooldown < elapsedTicks) {
         interaktionCooldown = 0;
@@ -105,12 +104,17 @@ void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
     if(mNMerch == 0 && mood == TEXTURES::MERCHANT)
     {
         mood = -1;
+    } else if (mNMerch > 0) {
+        mood = TEXTURES::MERCHANT;
     }
     if(mood > 0)
         drawSprite = true;
     sf::CircleShape shape(mRadius);
     if(mood == TEXTURES::MERCHANT)
         shape.setFillColor(PLAYER_COLOR[whichIsTheMaxFandom()]);
+    else if (mFandom.size() == 0) {
+        shape.setFillColor(color);
+    }
     else if(maxFandom() > OBVIOUS_FANDOM)
         shape.setFillColor(PLAYER_COLOR[whichIsTheMaxFandom()]);
     else if(mFandom.size() <= 3){
@@ -198,6 +202,8 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
                             {
                                 (*besucher)[j].giveMerch(&((*besucher)[i]));
                             }
+                            else if((*besucher)[j].haveMerch())
+                                continue;
                             else{
                                 vecf dFandom = vec_Mul( vec_Sub( &((*besucher)[i].mFandom), &((*besucher)[j].mFandom) ), 0.4f);
                                 float sI = (*besucher)[i].standhaftigkeit();

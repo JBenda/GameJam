@@ -10,9 +10,11 @@
 
 typedef std::vector<float> vecf;
 
+const sf::Color README_COLOR[2] = {sf::Color(sf::Color::Cyan), sf::Color(0x00, 0x80, 0x80)};
 const sf::Color CALL_COLOR[2] = {sf::Color(0xF0, 0xF0, 0x00, 0x80), sf::Color(0x88, 0x88, 0x00, 0x80)};
 const sf::Color PLAYER_COLOR[4] = {sf::Color(0xFF, 0x00, 0x00), sf::Color(0x00, 0xFF, 0x00), sf::Color(0x00, 0x00, 0xFF), sf::Color(0xFF, 0xFF, 0x00)};
 #include "Utils.h"
+#include "Splash.h"
 
 #define AGGRESSION_VISIBLITY 70
 
@@ -48,7 +50,7 @@ enum TEXTURES{AGGRO, BAD_REACTION, GOOD_REACTION, MERCHANT};
 #define CONE_ANGLE        25.0f
 #define MEGAPHONE_RANGE  350.0f
 #define VELOCITY           5.0f
-#define AGGRO_FAC          0.8f
+#define AGGRO_FAC          1.0f
 
 #define TICKS_PER_GAME     1200
 
