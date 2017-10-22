@@ -52,7 +52,7 @@ enum TEXTURES{AGGRO, BAD_REACTION, GOOD_REACTION, MERCHANT};
 #define VELOCITY           5.0f
 #define AGGRO_FAC          1.0f
 
-#define TICKS_PER_GAME     1200
+#define TICKS_PER_GAME     1400
 
 #define ROTATION_PER_TICK    10
 

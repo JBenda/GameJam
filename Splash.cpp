@@ -89,14 +89,24 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
     text[4].setFillColor(sf::Color::Green);
     text[4].setString(TEXT_OUT[4]);
     text[4].setPosition(20, SPLASH_WIDTH / 2 - text[4].getGlobalBounds().width/2);
-    //std::cerr << "Finished Build" << std::endl;
-    while (win->isOpen()) {
+    std::cerr << "Finished Build" << std::endl;
+    while (win->isOpen()) { //y * U horizontal, X & V Vertikal
         sf::Event event;
         while (win->pollEvent(event)) {
             switch (event.type) {
                 case sf::Event::Closed:
                     win->close();
                     break;
+                case sf::Event::JoystickButtonPressed:
+                    switch(event.joystickButton.button)
+                    {
+                        case 0: result = 2; break;
+                        case 2: result = 3; break;
+                        case 1: result = 4; break;
+                        case 3: result = -1; break;
+                    }
+                    if(event.joystickButton.button <= 3)
+                        win->close();
                 case sf::Event::MouseButtonPressed:
                     if(readmeSelected && event.mouseButton.button == sf::Mouse::Left)
                         showReadMe();
@@ -143,7 +153,7 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
             selectedBubble = -1;
         }
 
-        if(vecLen(sf::Mouse::getPosition(*win) - readMePos + sf::Vector2i(12, 12)) < 25)
+        if(vecLen(sf::Mouse::getPosition(*win) - (readMePos + sf::Vector2i(25, 25))) < 25)
         {
             readmeSelected = true;
         }
@@ -152,12 +162,7 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
         //std::cerr << "Start Draw" << std::endl;
         win->clear(sf::Color::Black);
         //std::cerr << "background finished" << std:: endl;
-        sf::CircleShape readme(25);
-        readme.setPosition(readMePos.x, readMePos.y);
-        readme.setFillColor( readmeSelected ? README_COLOR[0] : README_COLOR[1] );
-        win->draw(readme);
-        readme.setTexture(&readMeTex);
-        win->draw(readme);
+
 
         for(int i = 0; i < NUM_BUBBLES; i++)
         {
@@ -169,7 +174,12 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
             win->draw(bubbles[i]);
             win->draw(text[i]);
         }
-
+sf::CircleShape readme(25);
+        readme.setPosition(readMePos.x, readMePos.y);
+        readme.setFillColor( readmeSelected ? README_COLOR[0] : README_COLOR[1] );
+        win->draw(readme);
+        readme.setTexture(&readMeTex);
+        win->draw(readme);
         win->draw(text[4]);
 
         win->display();
