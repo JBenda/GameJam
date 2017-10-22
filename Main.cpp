@@ -13,7 +13,7 @@
 
 int main()
 {
-    bool allCorect = true;
+    bool allCorrect = true;
     int winner = -1;
     int *score;
     int elapsedTicks = 0;
@@ -165,10 +165,10 @@ int main()
         std::cin >> playerNum;
     }
     catch(__exception e){
-        allCorect = false;
+        allCorrect = false;
     }
-    if(allCorect)
+    if(allCorrect)
         if(playerNum < 2 || playerNum > 4)
-            allCorect = false;
-    }while(allCorect);
+            allCorrect = false;
+    }while(allCorrect);
 }
