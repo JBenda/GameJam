@@ -40,7 +40,8 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, sf::Vector2f di
             down = sf::Keyboard::Key::J;
             left = sf::Keyboard::Key::H;
             right = sf::Keyboard::Key::L;
-            shout = sf::Keyboard:: Key::Space;
+            shout = sf::Keyboard::Key::Space;
+            merch = sf::Keyboard::Key::M;
           break;
         case KEYPAD:
             up = sf::Keyboard::Key::Numpad8;
@@ -180,22 +181,45 @@ void Spieler::update(int elapsedTicks)
     if(mStun <= 0)
     {
         mStun = 0;
-        if( sf::Keyboard::isKeyPressed(shout))
-            megaphone();
-        if( sf::Keyboard::isKeyPressed(up) )
-            move(true, elapsedTicks);
-        if( sf::Keyboard::isKeyPressed(down))
-            move(false, elapsedTicks);
-        if( sf::Keyboard::isKeyPressed(left))
-            turn(-ROTATION_PER_TICK);
-        if( sf::Keyboard::isKeyPressed(right))
-            turn( ROTATION_PER_TICK);
-        if( sf::Keyboard::isKeyPressed(merch))
+        if(! sf::Joystick::isConnected(mID))
         {
-            if(!merchLocked)
-                handoutMerch();
+            if( sf::Keyboard::isKeyPressed(shout))
+                megaphone();
+            if( sf::Keyboard::isKeyPressed(up) )
+                move(true, elapsedTicks);
+            if( sf::Keyboard::isKeyPressed(down))
+                move(false, elapsedTicks);
+            if( sf::Keyboard::isKeyPressed(left))
+                turn(-ROTATION_PER_TICK);
+            if( sf::Keyboard::isKeyPressed(right))
+                turn( ROTATION_PER_TICK);
+            if( sf::Keyboard::isKeyPressed(merch))
+            {
+                if(!merchLocked)
+                    handoutMerch();
+            }
+            else
+                merchLocked = false;
         }
         else
-            merchLocked = false;
+        {
+            if(sf::Joystick::getAxisPosition(mID, sf::Joystick::Y) > 50)
+                move(false, elapsedTicks);
+            if(sf::Joystick::getAxisPosition(mID, sf::Joystick::Y) < -50)
+                move(true, elapsedTicks);
+            if(sf::Joystick::getAxisPosition(mID, sf::Joystick::U) < -50)
+                turn(-ROTATION_PER_TICK);
+            if(sf::Joystick::getAxisPosition(mID, sf::Joystick::U) > 50)
+                turn(ROTATION_PER_TICK);
+            if(sf::Joystick::isButtonPressed(mID, 4))
+                megaphone();
+            if(sf::Joystick::isButtonPressed(mID, 5))
+            {
+                if(!merchLocked)
+                    handoutMerch();
+            }
+            else
+                merchLocked = false;
+        }
     }
 }

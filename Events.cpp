@@ -18,7 +18,10 @@ void Events::handleEvents(int winner)
             case sf::Event::Closed:
                 mWindow->close();
                 break;
-
+            case sf::Event::JoystickButtonPressed:
+                if(winner >= 0 && event.joystickButton.button <= 3)
+                    mWindow->close();
+                break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::Return:
