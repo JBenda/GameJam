@@ -13,6 +13,7 @@ sf::Vector2f rotateVec(sf::Vector2f vec, int degree);
 sf::Vector2f randVec(int len);
 
 float vecLen(sf::Vector2f vec);
+float vecLen(sf::Vector2i vec);
 float crossProd(sf::Vector2f vecA, sf::Vector2f vecB);
 float dotProd(sf::Vector2f vecA, sf::Vector2f vecB);
 

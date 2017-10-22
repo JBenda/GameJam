@@ -13,7 +13,7 @@ class Spieler
 {
 public:
     enum Controls{WASD, HJKL, ARROW_KEYS, KEYPAD};
-    Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, sf::Font font, size_t id);
+    Spieler(int radius, sf::Color colour, sf::Vector2f pos, sf::Vector2f dir, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, sf::Font font, size_t id);
     void draw(std::shared_ptr<sf::RenderWindow> win);
     void megaphone();
     void move(bool forwards, int steps);

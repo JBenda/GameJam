@@ -14,7 +14,7 @@ public:
     Events(std::shared_ptr<sf::RenderWindow> win,
            std::shared_ptr<std::vector<Spieler>> spieler,
            std::shared_ptr<std::vector<Besucher>> besucher);
-    void handleEvents();
+    void handleEvents(int winner);
 
 private:
     std::shared_ptr<sf::RenderWindow> mWindow;

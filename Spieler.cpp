@@ -2,7 +2,7 @@
 #include "Utils.h"
 #include "Main.h"
 
-Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, sf::Font font, size_t id)
+Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, sf::Vector2f dir, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, sf::Font font, size_t id)
 {
     merchLocked = false;
     mStun = 0;
@@ -11,7 +11,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
     mRadius = radius;
     mColour = colour;
     mPosition = pos;
-    mDirection = sf::Vector2f(0, -1);
+    mDirection = dir / vecLen(dir);
     mConeColour = sf::Color(0x80, 0x80, 0x80, 0x80);
     mControler = controler;
     mCall = 0;
@@ -114,8 +114,7 @@ void Spieler::megaphone()
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
             std::vector<float> dFandom = vec_P_Sub(&((*pBesucher)[i].mFandom), mID);
-            if(vec_Len(&dFandom) < 0.7f * sqrt(dFandom.size()))
-            if(vec_Len(&dFandom) < 0.7f * sqrt(dFandom.size()))
+            if(vec_Len(&dFandom) < 0.6f * sqrt(dFandom.size()))
             {
                 (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.6f) );
                 (*pBesucher)[i].mood = TEXTURES::GOOD_REACTION;

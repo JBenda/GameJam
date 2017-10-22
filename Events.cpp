@@ -10,7 +10,7 @@ Events::Events(std::shared_ptr<sf::RenderWindow>      window,
     mBesucher = besucher;
 }
 
-void Events::handleEvents()
+void Events::handleEvents(int winner)
 {
     sf::Event event;
     while (mWindow->pollEvent(event)) {
@@ -21,6 +21,9 @@ void Events::handleEvents()
 
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
+                    case sf::Keyboard::Return:
+                    if(winner < 0)
+                        break;
                     case sf::Keyboard::Escape:
                         mWindow->close();
                         break;
