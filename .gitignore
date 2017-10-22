@@ -11,6 +11,8 @@
 
 #my specific build
 makefile
+*.o
+*.dll
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
