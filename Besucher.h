@@ -23,7 +23,7 @@ public:
     int mAggressionLvl;
     int aggro;
     int mood;
-
+    bool haveMerch();
     Besucher(sf::Vector2f pos, int radius, sf::Color color, sf::Vector2f mov, int charisma, int lambda, std::vector<float> fandom, std::shared_ptr<std::vector<sf::Texture>> textures);
 
     static int getWaveDifference(int wl1, int wl2)

@@ -2,8 +2,9 @@
 #include "Utils.h"
 #include "Main.h"
 
-Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, size_t id)
+Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls controler, std::shared_ptr<std::vector<Besucher>> besucher, sf::Font font, size_t id)
 {
+    merchLocked = false;
     mStun = 0;
     mID = id;
     pBesucher = besucher;
@@ -14,6 +15,8 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
     mConeColour = sf::Color(0x80, 0x80, 0x80, 0x80);
     mControler = controler;
     mCall = 0;
+    mNMerch = STARTING_MERCHANDISE;
+    mFont = font;
     switch(mControler)
     {
         case ARROW_KEYS:
@@ -22,6 +25,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
             left = sf::Keyboard::Key::Left;
             right = sf::Keyboard::Key::Right;
             shout = sf::Keyboard::Key::RShift;
+            merch = sf::Keyboard::Key::Dash;
           break;
         case WASD:
             up = sf::Keyboard::Key::W;
@@ -29,6 +33,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
             left = sf::Keyboard::Key::A;
             right = sf::Keyboard::Key::D;
             shout = sf::Keyboard::Key::Q;
+            merch = sf::Keyboard::Key::E;
           break;
         case HJKL:
             up = sf::Keyboard::Key::K;
@@ -43,6 +48,7 @@ Spieler::Spieler(int radius, sf::Color colour, sf::Vector2f pos, Controls contro
             left = sf::Keyboard::Key::Numpad4;
             right = sf::Keyboard::Key::Numpad6;
             shout = sf::Keyboard::Key::Numpad5;
+            merch = sf::Keyboard::Key::Numpad9;
           break;
     }
 }
@@ -55,33 +61,44 @@ void Spieler::draw(std::shared_ptr<sf::RenderWindow> win)
     sf::Vector2f rightSide = mPosition + rotateVec(mDirection * MEGAPHONE_RANGE, -CONE_ANGLE);
     leftSide  += halfRadius;
     rightSide += halfRadius;
-
-    sf::ConvexShape cv;
-    cv.setPointCount(3);
-    cv.setPoint(0, mPosition + halfRadius);
-    cv.setPoint(1, rightSide);
-    cv.setPoint(2, leftSide);
-    if(mCall > 0)
+    if(mStun <= CALL_DURATION)
     {
-        switch(mCall % 3)
+        sf::ConvexShape cv;
+        cv.setPointCount(3);
+        cv.setPoint(0, mPosition + halfRadius);
+        cv.setPoint(1, rightSide);
+        cv.setPoint(2, leftSide);
+        if(mCall > 0)
         {
-        case 0:
-        case 2:
-            cv.setFillColor(CALL_COLOR[1]);
-            break;
-        case 1:
-            cv.setFillColor(CALL_COLOR[0]);
-            break;
+            switch(mCall % 3)
+            {
+            case 0:
+            case 2:
+                cv.setFillColor(CALL_COLOR[1]);
+                break;
+            case 1:
+                cv.setFillColor(CALL_COLOR[0]);
+                break;
+            }
         }
+        else
+            cv.setFillColor(mConeColour);
+        win-> draw(cv);
     }
-    else
-        cv.setFillColor(mConeColour);
-    win-> draw(cv);
-
     sf::CircleShape shape = sf::CircleShape(mRadius);
     shape.setFillColor(mColour);
     shape.setPosition(mPosition.x - mRadius / 2, mPosition.y - mRadius / 2);
     win-> draw(shape);
+
+    sf::Text text;
+    char s[32];
+    sprintf(s, "%d", mNMerch);
+    text.setString(s);
+    text.setFont(mFont);
+    text.setCharacterSize(20);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(mPosition.x, mPosition.y);
+    win-> draw(text);
 }
 
 void Spieler::megaphone()
@@ -97,9 +114,10 @@ void Spieler::megaphone()
 
         if (cos(DegToRad(CONE_ANGLE)) < dotProd(delta, mDirection) / len) {
             std::vector<float> dFandom = vec_P_Sub(&((*pBesucher)[i].mFandom), mID);
-            if(vec_Len(&dFandom) < 0.5f * sqrt(dFandom.size()))
+            if(vec_Len(&dFandom) < 0.7f * sqrt(dFandom.size()))
+            if(vec_Len(&dFandom) < 0.7f * sqrt(dFandom.size()))
             {
-                (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.7f) );
+                (*pBesucher)[i].mFandom = vec_Sub( &((*pBesucher)[i].mFandom), vec_Mul(&dFandom, 0.6f) );
                 (*pBesucher)[i].mood = TEXTURES::GOOD_REACTION;
             }
             else{
@@ -116,7 +134,17 @@ void Spieler::megaphone()
 
 void Spieler::handoutMerch()
 {
-
+    merchLocked = true;
+    size_t len = pBesucher-> size();
+    for (size_t i = 0; i < len; ++i) {
+        size_t dist = vecLen(mPosition - (*pBesucher)[i].position);
+        if (dist < MERCH_HANDOUT_DIST && (*pBesucher)[i].whichIsTheMaxFandom() == mID && mNMerch > 0 && ! (*pBesucher)[i].haveMerch()) {
+            (*pBesucher)[i].addMerch(MERCH_PER_BOX);
+            --mNMerch;
+            (*pBesucher)[i].mood = TEXTURES::MERCHANT;
+            return;
+        }
+    }
 }
 
 void Spieler::move(bool forwards, int steps)
@@ -140,6 +168,8 @@ void Spieler::turn(int deg)
 void Spieler::addStun(int stun)
 {
     mStun += stun;
+    if(mStun > STUN_DURATION * 2)
+        mStun = STUN_DURATION * 2;
 }
 
 void Spieler::update(int elapsedTicks)
@@ -162,6 +192,11 @@ void Spieler::update(int elapsedTicks)
         if( sf::Keyboard::isKeyPressed(right))
             turn( ROTATION_PER_TICK);
         if( sf::Keyboard::isKeyPressed(merch))
-            ;
+        {
+            if(!merchLocked)
+                handoutMerch();
+        }
+        else
+            merchLocked = false;
     }
 }

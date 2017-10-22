@@ -13,6 +13,7 @@
 
 int main()
 {
+    bool allCorect = true;
     int winner = -1;
     int *score;
     int elapsedTicks = 0;
@@ -34,17 +35,40 @@ int main()
     std::normal_distribution<double> gaussCharisma( 4, 1.2);
     std::normal_distribution<double> gaussFandom(0.2, 0.2);
 
-    long playerNum = 3;
+    int playerNum = 2;
 
-
+    sf::Font font;
+    if (!font.loadFromFile("data/LinLibertine_R.otf")) {
+        std::cerr << "Couldn‘t load font from ‘data/LinLibertine_R.otf’" << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::shared_ptr<std::vector<Spieler>> spieler;
     std::shared_ptr<std::vector<Besucher>> besucher;
+    std::shared_ptr<sf::RenderWindow> window;
+    do{
+    winner = -1;
+    elapsedTicks = 0;
+
     besucher = std::make_shared<std::vector<Besucher>>();
 
-    std::shared_ptr<std::vector<Spieler>> spieler;
+
     spieler = std::make_shared<std::vector<Spieler>>();
-    spieler-> push_back(Spieler(25, PLAYER_COLOR[0], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::WASD, besucher, 0));
-    spieler-> push_back(Spieler(25, PLAYER_COLOR[1], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::KEYPAD, besucher, 1));
-    spieler-> push_back(Spieler(25, PLAYER_COLOR[2], sf::Vector2f(WINDOW_HWIDTH, WINDOW_HHEIGHT), Spieler::Controls::ARROW_KEYS, besucher, 2));
+    switch(playerNum)
+    {
+    case 4:
+        spieler->push_back(Spieler(25, PLAYER_COLOR[playerNum - 4], sf::Vector2f(0 + 50, WINDOW_HEIGHT - 50), Spieler::Controls::HJKL, besucher, font, playerNum - 4));
+    case 3:
+        spieler->push_back(Spieler(25, PLAYER_COLOR[playerNum - 3], sf::Vector2f(WINDOW_WIDTH - 50, 0 + 50), Spieler::Controls::ARROW_KEYS, besucher, font, playerNum - 3));
+    case 2:
+        spieler->push_back(Spieler(25, PLAYER_COLOR[playerNum - 2], sf::Vector2f(WINDOW_WIDTH - 50, WINDOW_HEIGHT - 50), Spieler::Controls::KEYPAD, besucher, font, playerNum - 2));
+    case 1:
+        spieler->push_back(Spieler(25, PLAYER_COLOR[playerNum - 1], sf::Vector2f(0 + 50, 0 + 50), Spieler::Controls::WASD, besucher, font, playerNum - 1));
+        break;
+    }
+
+
+
+
 
     sf::Color colorBuffer = sf::Color::White;
     for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -57,16 +81,11 @@ int main()
         for(int i = 0; i < playerNum; i++)
             fandom.push_back(gaussFandom(unrealEngine));
         besucher-> push_back(Besucher(sf::Vector2f(rand() % WINDOW_WIDTH - 100, rand() % WINDOW_HEIGHT - 100), 20,
-                                     colorBuffer, randVec(5), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom, textures));
+                                     colorBuffer, randVec(BESCUHER_SPEED), gaussCharisma(unrealEngine), rand() % 10 + 1, fandom, textures));
     }
 
-    std::shared_ptr<sf::RenderWindow> window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
+    window = std::make_shared<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "GameJam");
 
-    sf::Font font;
-    if (!font.loadFromFile("data/LinLibertine_R.otf")) {
-        std::cerr << "Couldn‘t load font from ‘data/LinLibertine_R.otf’" << std::endl;
-        return EXIT_FAILURE;
-    }
 
     sf::Clock clock = sf::Clock();
     Events eventHandler = Events(window, spieler, besucher);
@@ -91,13 +110,11 @@ int main()
         }
         else if(winner < 0)
         {
-            std::cerr << "Test" << std::endl;
             score = (int*)calloc(playerNum, sizeof(int));//init 0
             for(size_t i = 0; i < besucher->size(); i++)
             {
                 score[ (*besucher)[i].whichIsTheMaxFandom() ] ++;
             }
-            std::cerr << "JUHU" << std::endl;
             int plID = 0;
             int hs = 0;
             for(int i = 0; i < playerNum; i++) {
@@ -109,7 +126,7 @@ int main()
             winner = plID;
 
         }
-        std::cerr << elapsedTicks << std::endl;
+        //std::cerr << elapsedTicks << std::endl;
         window->clear(cBACKGROUND);
 
         for (int i = 0; i < MAX_BESUCHER; ++i) {
@@ -121,6 +138,7 @@ int main()
 
         if(elapsedTicks >= TICKS_PER_GAME && winner >= 0)
         {
+
             sf::Text text;
             char str[1024];
              sprintf(str, "YOU WIN!!\n\t%i", score[winner]);
@@ -129,9 +147,28 @@ int main()
             text.setFont(font);
             text.setCharacterSize(80);
             text.setPosition(WINDOW_HWIDTH - text.getGlobalBounds().height / 2, WINDOW_HHEIGHT - text.getGlobalBounds().width / 2);
-
+            sf::RectangleShape frame = sf::RectangleShape(sf::Vector2f(text.getGlobalBounds().width + 20.f, text.getGlobalBounds().height + 20.f));
+            frame.setPosition(text.getGlobalBounds().left - 10.f, text.getGlobalBounds().top - 10);
+            frame.setOutlineThickness(8);
+            frame.setOutlineColor(sf::Color::Yellow);
+            frame.setFillColor(sf::Color::Black);
+            window->draw(frame);
             window->draw(text);
         }
         window->display();
     }
+    //free(score);
+    besucher.reset();
+    spieler.reset();
+    std::cout << "Lust auf noch eine Runde ? \n Spieler Anzahl(2-4): ";
+    try{
+        std::cin >> playerNum;
+    }
+    catch(__exception e){
+        allCorect = false;
+    }
+    if(allCorect)
+        if(playerNum < 2 || playerNum > 4)
+            allCorect = false;
+    }while(allCorect);
 }
