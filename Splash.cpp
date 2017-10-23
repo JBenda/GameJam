@@ -12,11 +12,13 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
     sf::Vector2i readMePos(30, SPLASH_WIDTH - 30);
     bool readmeSelected = false;
     if(! readMeTex.loadFromFile("data/README.png"))
-        std::cerr << "Failed to load Textuer from data/README.png" << std::endl;
+        //std::cerr << "Failed to load Textuer from data/README.png" << std::endl;
 
-    int selectedBubble = -1;
-    char *TEXT_OUT[6] = {"2", "3", "4", "Cancel", "Choose Player Number", "BUBBLES"};
-    std::shared_ptr<sf::RenderWindow> win = std::make_shared<sf::RenderWindow>(sf::VideoMode(SPLASH_WIDTH, SPLASH_HEIGHT), TEXT_OUT[5]);
+    //int selectedBubble = -1;
+    //int selectedBubble = -1;
+    int usless = 0;
+    std::string TEXT_OUT[6] = {"2", "3", "4", "Cancel", "Choose Player Number", "BUBBLES"}  ;
+    std::shared_ptr<sf::RenderWindow> win = std::make_shared<sf::RenderWindow>(sf::VideoMode(SPLASH_WIDTH, SPLASH_HEIGHT), TEXT_OUT[5].c_str());
     int result = -1;
 
     std::vector<Besucher> besucher = std::vector<Besucher>();
@@ -91,15 +93,18 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
     text[4].setOutlineThickness(2);
     text[4].setString(TEXT_OUT[4]);
     text[4].setPosition(20, SPLASH_WIDTH / 2 - text[4].getGlobalBounds().width/2);
-    std::cerr << "Finished Build" << std::endl;
+    //std::cerr << "Finished Build" << std::endl;
+    int selectedBubble = -1;
     while (win->isOpen()) { //y * U horizontal, X & V Vertikal
         sf::Event event;
+        //std::cerr << "lebe noch" << std::endl;  
         while (win->pollEvent(event)) {
             switch (event.type) {
                 case sf::Event::Closed:
                     win->close();
                     break;
                 case sf::Event::JoystickButtonPressed:
+                    //std::cerr << "Joystick" << std::endl;
                     switch(event.joystickButton.button)
                     {
                         case 0: result = 2; break;
@@ -109,6 +114,7 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
                     }
                     if(event.joystickButton.button <= 3)
                         win->close();
+                        break;
                 case sf::Event::MouseButtonPressed:
                     if(readmeSelected && event.mouseButton.button == sf::Mouse::Left)
                         showReadMe();
@@ -130,7 +136,8 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
                     break;
                 default: break;
             }
-        }
+        } 
+        //std::cerr << "BLA" << std::endl;
         bool unselect = true;
         for(int i = 0; i < 4; i ++)
         {
@@ -138,8 +145,11 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
             {
                 if(i != selectedBubble)
                 {
-                    bubbles[selectedBubble].setFillColor(BUBBLE_COLOR[selectedBubble]);
-                    text[selectedBubble].setFillColor(sf::Color::Black);
+                    if(selectedBubble >= 0)
+                    {
+                        bubbles[selectedBubble].setFillColor(BUBBLE_COLOR[selectedBubble]);
+                        text[selectedBubble].setFillColor(sf::Color::Black);
+                    }
                     selectedBubble = i;
                     bubbles[i].setFillColor(SELECTED_COLOR[i]);
                     text[i].setFillColor(sf::Color::White);
@@ -148,13 +158,16 @@ int splashscreen(std::shared_ptr<std::vector<sf::Texture>> textures, sf::Font fo
                 break;
             }
         }
-        if(unselect)
+        //std::cerr << "MEEP" << std::endl;
+        if(unselect && selectedBubble >= 0)
         {
+            if(selectedBubble < 0 || selectedBubble > 4)
+                //std::cerr << selectedBubble << " och nioo" << std::endl;
             bubbles[selectedBubble].setFillColor(BUBBLE_COLOR[selectedBubble]);
             text[selectedBubble].setFillColor(sf::Color::Black);
             selectedBubble = -1;
         }
-
+        //std::cerr << "mhhh" << std::endl;
         if(vecLen(sf::Mouse::getPosition(*win) - (readMePos + sf::Vector2i(25, 25))) < 25)
         {
             readmeSelected = true;
@@ -187,5 +200,6 @@ sf::CircleShape readme(25);
         win->display();
         //std::cerr << "Finehsd DRaw" << std::endl;
     }
+    //std::cerr << "End" << std::endl;
     return result;
 }

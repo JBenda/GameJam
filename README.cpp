@@ -6,7 +6,7 @@
 void showReadMe()
 {
     sf::Texture texture;
-    if (!texture.loadFromFile("data/readme.png")) {
+    if (!texture.loadFromFile("data/backup.png")) {
         std::cerr << "Couldn’t load readme..." << std::endl;
         return;
     }

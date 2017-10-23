@@ -91,10 +91,20 @@ void Besucher::update(int elapsedTicks, std::shared_ptr<std::vector<Spieler>> sp
             movement = rotateVec(sf::Vector2f(0,  mSpeed), rand() % 160 - 80);
     }
 }
+int LCL_FACTOR(float i)
+{
+    int r = floor(i * 128 + 128);
+    if(r < 0 || r > 255)
+    {
+        r = r < 128 ? 0 : 255;
+        std::cerr << "Error" << std::endl;
+    }
 
+    return i * 128 ;
+}
 void Besucher::draw(std::shared_ptr<sf::RenderWindow> win)
 {
-#define LCL_FACTOR * 128 + 128
+#define LCL_FACTOR  * 128 + 127
     bool drawSprite = false;
     if(mAggressionLvl > AGGRESSION_VISIBLITY)
     {
@@ -141,7 +151,7 @@ bool Besucher::collided(Besucher *besucher)
 int Besucher::whichIsTheMaxFandom()
 {
     float lmax = 0;
-    int id;
+    int id =0;
     for (size_t i = 0; i <= mFandom.size(); ++i) {
         lmax = mFandom[i] > lmax ? id = i, mFandom[i] : lmax;//ich war das nicht !! Das war der da.
     }
@@ -223,14 +233,14 @@ void besucherCollision(std::shared_ptr<std::vector<Besucher>> besucher)
                                 for(size_t k = 0; k < (*besucher)[i].mFandom.size(); k++)
                                 {
                                     if((*besucher)[i].mFandom[k] != (*besucher)[i].mFandom[k])
-                                        (*besucher)[i].mFandom[k] = 0.f;
+                                        (*besucher)[i].mFandom[k] = 1.f;
                                     if((*besucher)[i].mFandom[k] > 1.f)
                                         (*besucher)[i].mFandom[k] = 1.f;
                                     else if((*besucher)[i].mFandom[k] < -1.f)
                                         (*besucher)[i].mFandom[k] = -1.f;
 
                                     if((*besucher)[j].mFandom[k] != (*besucher)[j].mFandom[k])
-                                        (*besucher)[j].mFandom[k] = 0.f;
+                                        (*besucher)[j].mFandom[k] = 1.f;
                                     if((*besucher)[j].mFandom[k] > 1.f)
                                         (*besucher)[j].mFandom[k] = 1.f;
                                     else if((*besucher)[j].mFandom[k] < -1.f)
